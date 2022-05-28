@@ -1,14 +1,53 @@
 plugins {
-	id 'fabric-loom' version '0.12-SNAPSHOT'
+	id 'fabric-loom' version '0.11-SNAPSHOT'
 	id 'maven-publish'
 }
 
+//
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
+//
 archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
+
+//
+project.ext.lwjglVersion = "3.3.1"
+project.ext.jomlVersion = "1.10.4"
+project.ext.winNatives = "natives-windows"
+project.ext.linuxNatives = "natives-linux"
+
+dependencies {
+	// our important library!
+	include(implementation("org.bytedeco:javacpp:1.5.7"))
+
+	//
+	include(implementation("org.lwjgl:lwjgl:$lwjglVersion"))
+	include(implementation("org.lwjgl:lwjgl-vulkan:$lwjglVersion"))
+	include(implementation("org.lwjgl:lwjgl-vma:$lwjglVersion"))
+	include(implementation("org.joml:joml:${jomlVersion}"))
+	include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$winNatives"))
+	include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$linuxNatives"))
+
+	//
+	include(implementation("org.lwjgl:lwjgl-glfw:$lwjglVersion"))
+	include(runtimeOnly("org.lwjgl:lwjgl-glfw:$lwjglVersion:$winNatives"))
+	include(runtimeOnly("org.lwjgl:lwjgl-glfw:$lwjglVersion:$linuxNatives"))
+	include(implementation("org.lwjgl:lwjgl-stb:$lwjglVersion"))
+	include(runtimeOnly("org.lwjgl:lwjgl-stb:$lwjglVersion:$winNatives"))
+	include(runtimeOnly("org.lwjgl:lwjgl-stb:$lwjglVersion:$linuxNatives"))
+	include(implementation("org.lwjgl:lwjgl-openal:$lwjglVersion"))
+	include(runtimeOnly("org.lwjgl:lwjgl-openal:$lwjglVersion:$winNatives"))
+	include(runtimeOnly("org.lwjgl:lwjgl-openal:$lwjglVersion:$linuxNatives"))
+	include(runtimeOnly("org.lwjgl:lwjgl:$lwjglVersion:$winNatives"))
+	include(runtimeOnly("org.lwjgl:lwjgl:$lwjglVersion:$linuxNatives"))
+
+	//
+	include(implementation("org.lwjgl:lwjgl-shaderc:$lwjglVersion"))
+	include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$winNatives"))
+	include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$linuxNatives"))
+}
 
 repositories {
 	// Add repositories to retrieve artifacts from in here.
@@ -39,6 +78,10 @@ processResources {
 tasks.withType(JavaCompile).configureEach {
 	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
 	it.options.release = 17
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/vulkanmod.accesswidener")
 }
 
 java {
