@@ -55,3 +55,7 @@ bin/
 # fabric
 
 run/
+
+# avoid bad open
+./vc
+./vs
