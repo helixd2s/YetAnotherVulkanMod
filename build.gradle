@@ -31,6 +31,11 @@ dependencies {
 	include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$linuxNatives"))
 
 	//
+	include(implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion"))
+	include(runtimeOnly("org.lwjgl:lwjgl-opengl:$lwjglVersion:$winNatives"))
+	include(runtimeOnly("org.lwjgl:lwjgl-opengl:$lwjglVersion:$linuxNatives"))
+
+	//
 	include(implementation("org.lwjgl:lwjgl-glfw:$lwjglVersion"))
 	include(runtimeOnly("org.lwjgl:lwjgl-glfw:$lwjglVersion:$winNatives"))
 	include(runtimeOnly("org.lwjgl:lwjgl-glfw:$lwjglVersion:$linuxNatives"))
@@ -81,7 +86,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/vulkanmod.accesswidener")
+	accessWidenerPath = file("src/main/resources/yavulkanmod.accesswidener")
 }
 
 java {
