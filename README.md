@@ -20,6 +20,22 @@ Own Vulkan API, based on the experience of others, and our own. Partial Render R
 - https://github.com/helixd2s/Alter (Main Project)
 - https://github.com/helixd2s/vk-utils 
 
+## TODO
+
+  - [ ] ☕ Latest LWJGL loading, interop and support
+  - [ ] ☕ JNI, JavaCPP and Java support (lossless)
+  - [ ] ☕ Correct Kotlin support (subset of Java)
+  - [ ] ☕ OpenGL interop and compatibility
+  - [ ] ☕ Interop with VMA (almost done)
+  - [ ] ☕ Minecraft mod itself (Forge)
+  - [ ] ☕ Support for Fabric (mod, library, api)
+  - [ ] ☕ Support for 1.18.2 and/or beyond
+  - [ ] 👑 Support for Rendering API and Blaze3D
+  - [ ] 👑 Support for OptiFabric (Fabric)
+  - [ ] 👑 Support for Immersive Portals Mod (Fabric)
+  - [ ] 👑 Support for Forge (mod, library)
+  - [ ] 👑 Support for Optifine (Forge)
+
 ## Mentions P.S.
 
 - RTX@NVIDIA
@@ -33,3 +49,4 @@ Own Vulkan API, based on the experience of others, and our own. Partial Render R
 - [`Iris`](https://github.com/IrisShaders/Iris), will extracted some features
 - [`Sodium`](https://github.com/CaffeineMC/sodium-fabric), will used as basis
 - [`Optifine`](https://optifine.net/downloads)
+
