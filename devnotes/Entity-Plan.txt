@@ -1,0 +1,9 @@
+== Entity == 
+
+MCP-Reborn: WorldVertexBufferUploader -> RenderType  -> IRenderTypeBuffer
+Fabric    : BufferRenderer            -> RenderLayer -> VertexConsumerProvider
+
+
+== World == 
+
+DEPENDS ON MOD KIND!

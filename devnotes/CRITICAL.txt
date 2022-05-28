@@ -1,0 +1,67 @@
+#================[TRIVIA]==============#
+# This file for simpler development... #
+#======================================#
+
+#===========[MCP-1.16.2]============#==========[Fabric]=============#====[Location]=====#===[Reasons]===#===[REMARK]====#
+# GameRenderer.java                 # GameRenderer.class            #                   #               #               #
+# WorldRenderer.java                # WorldRenderer.class           #                   #               #               #
+# ChunkRenderDispatcher.java        # ChunkBuilder.class            #                   #               #               #
+# VertexBuffer.java                 # VertexBuffer.class            #                   #               #               #
+# VertexFormat.java                 # VertexFormat.class            #                   #               #               #
+# VertexFormatElement.java          # VertexFormatElement.class     #                   #               #               #
+# IRenderTypeBuffer.java            # VertexConsumerProvider.class  #                   #               #               #
+# BlockRenderDispatcher.java        # BlockRenderManager.class      #                   #               #               # 
+# BufferBuilder.java                # BufferBuilder.class           #                   #               #               #
+# WorldVertexBufferUploader.java    # BufferRenderer.class          #                   #               #               #
+# MatrixStack.java                  # MatrixStack.class             #                   #               #               #
+# RenderType.java                   # RenderLayer.class             #                   #               #               #
+#===================================#===============================#===================#===============#===============# 
+# [Blaze3D]                         # [Blaze3D][client/util...]     #                   #               #               #
+#===================================#===============================#===================#===============#===============# 
+#                                   # TextureUtil.class             #                   #               #               #
+#                                   # TextureManager.class          #                   #               #               #
+#                                   # OverlayTexture.class          #                   #               #               #
+#                                   # AbastractTexture.class        #                   #               #               #
+#                                   # NativeImage.class             #                   #               #               #
+#===================================#===============================#===================#===============#===============# 
+#                                   #                               #                   #               #               #
+#===================================#===============================#===================#===============#===============# 
+
+MOST CRITICAL FOR MINECRAFT RAY-TRACING: `VertexBuffer.class`, `VertexFormat.class`, `BufferRenderer.class`...
+ALSO, NEED SEARCH ENTRY POINTS FOR TEXTURES... (for colorish image)
+
+Also...
+# OLG Matrix Mode
+# Separate Normal (in Stack)
+
+# CURRENTLY, NOT FOUND ANYMORE... 
+# WorldVertexBuilder.java
+
+
+## Fabric, Already used for mod
+# Window.class
+# WorldRenderer.class
+# VertexFormat.class
+# VertexFormatElement.class
+
+## Also... for 1.16 Fabric (26.05.2020)
+# RenderLayer.class
+# VertexConsumer.class
+# VertexConsumerProvider.class
+# BlockRenderManager.class
+# ChunkBuilder.class
+# BufferBuilder.class 
+# BufferRenderer.class 
+# MatrixStack.class
+# GameRenderer.class
+# TexturedRenderLayers.class
+
+## CRITICAL for material system
+# RenderPhase.class    (abstract)
+# AbtractTexture.class (abstract)
+# Texture.class 
+# TextureManager.class  
+# Identifier.class      
+# TextureUtil.class
+# OverlayTexture.class
+# NativeImage.class

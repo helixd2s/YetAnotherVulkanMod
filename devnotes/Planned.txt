@@ -1,0 +1,9 @@
+On Chunk Rendering (Begin) => Create New Mesh Instance
+On Chunk Rendering (End) => Enclose Mesh Recording
+On Chunk Draw Command => Record Geometries into MeshSet (using Transform Feedback and VK to GL export)
+
+On Mob Rendering (Begin) => Create New Mob Instance
+On Mob Rendering (End) => Enclose Mesh Recording
+On Mob Draw Detail => Create Detail Instance for Meshset
+
+On Every Texture Binding => Record Material Into Material Set (and make bindless texture)

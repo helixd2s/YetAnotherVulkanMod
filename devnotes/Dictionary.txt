@@ -1,0 +1,25 @@
+// My understand... 
+- L<ClassPath>; //# Class Type
+- I             //# Integer
+- D             //# Double
+- V             //# Void
+- Z             //# Boolean
+
+/*
+    Searched in Google...
+
+    Character     Type          Interpretation
+    ------------------------------------------
+    B             byte          signed byte
+    C             char          Unicode character
+    D             double        double-precision floating-point value
+    F             float         single-precision floating-point value
+    I             int           integer
+    J             long          long integer
+    L<classname>; reference     an instance of class 
+    S             short         signed short
+    Z             boolean       true or false
+    [             reference     one array dimension
+
+    As helping example, used https://github.com/qouteall/ImmersivePortalsMod/tree/1.16
+*/ 
