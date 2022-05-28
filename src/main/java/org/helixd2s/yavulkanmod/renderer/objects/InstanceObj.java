@@ -11,11 +11,13 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.helixd2s.yavulkanmod.renderer.Utils.bb_to_str;
 import static org.helixd2s.yavulkanmod.renderer.Utils.str_to_bb;
 import static org.lwjgl.vulkan.VK10.*;
+import static org.lwjgl.vulkan.VK11.vkEnumeratePhysicalDeviceGroups;
 import static org.lwjgl.vulkan.VK13.VK_API_VERSION_1_3;
 
 public class InstanceObj extends BaseObj {
@@ -38,6 +40,9 @@ public class InstanceObj extends BaseObj {
     //
     public CreateInfo cInfo;
     public VkInstance instance;
+    public PointerBuffer pInstance;
+    public PointerBuffer pPhysicalDevices;
+    public List<VkPhysicalDevice> physicalDevices = new ArrayList<VkPhysicalDevice>();
 
     //
     public PointerBuffer searchExtensions(@NotNull CreateInfo cInfo){
@@ -87,6 +92,20 @@ public class InstanceObj extends BaseObj {
     };
 
     //
+    List<VkPhysicalDevice> enumeratePhysicalDevices() {
+        int physicalDeviceCount[] = {0};
+        vkEnumeratePhysicalDevices(instance, physicalDeviceCount, null);
+        pPhysicalDevices = PointerBuffer.allocateDirect(physicalDeviceCount[0]);
+        vkEnumeratePhysicalDevices(instance, physicalDeviceCount, pPhysicalDevices);
+
+        //
+        for (int i=0;i<physicalDeviceCount[0];i++) {
+            physicalDevices.add(new VkPhysicalDevice(pPhysicalDevices.get(i), instance));
+        };
+        return physicalDevices;
+    };
+
+    //
     public InstanceObj(Handle base, CreateInfo cInfo) {
         super(base);
         this.cInfo = cInfo;
@@ -107,8 +126,13 @@ public class InstanceObj extends BaseObj {
         instanceInfo.ppEnabledLayerNames(this.searchLayers(cInfo));
 
         //
-        PointerBuffer pInstance = PointerBuffer.allocateDirect(1);
-        vkCreateInstance(instanceInfo, null, pInstance);
+        this.setInfo(VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, instanceInfo.address());
+
+        //
+        vkCreateInstance(instanceInfo, null, pInstance = PointerBuffer.allocateDirect(1));
+        instance = new VkInstance(pInstance.get(), instanceInfo);
+        physicalDevices = new ArrayList<VkPhysicalDevice>();
+        this.enumeratePhysicalDevices();
 
         //
         this.handle = new Handle();

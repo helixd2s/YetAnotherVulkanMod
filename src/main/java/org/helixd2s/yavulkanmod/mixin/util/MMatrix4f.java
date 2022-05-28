@@ -1,11 +1,7 @@
-package org.helixd2s.yavulkanmod.mixin.utils;
+package org.helixd2s.yavulkanmod.mixin.util;
 
 import net.minecraft.util.math.Matrix4f;
-import org.lwjgl.system.MemoryStack;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-
-import java.nio.FloatBuffer;
 
 @Mixin(Matrix4f.class)
 public abstract class MMatrix4f {
