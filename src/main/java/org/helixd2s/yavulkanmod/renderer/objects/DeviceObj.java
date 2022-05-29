@@ -141,17 +141,22 @@ public class DeviceObj extends BaseObj {
         this.cInfo = cInfo;
 
         // TODO: bind map to physical device
-        var features = VkPhysicalDeviceFeatures2.create(this.setInfo(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2, VkPhysicalDeviceFeatures2.calloc(1).address()))
-                .pNext(VkPhysicalDeviceVulkan11Features.create(this.setInfo(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES, VkPhysicalDeviceVulkan11Features.calloc(1).address())))
-                .pNext(VkPhysicalDeviceVulkan12Features.create(this.setInfo(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES, VkPhysicalDeviceVulkan12Features.calloc(1).address())))
-                .pNext(VkPhysicalDeviceVulkan13Features.create(this.setInfo(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES, VkPhysicalDeviceVulkan13Features.calloc(1).address())));;
+        var features2 = VkPhysicalDeviceFeatures2.create(this.setInfo(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2, VkPhysicalDeviceFeatures2.calloc(1).address());
+        var features11 = VkPhysicalDeviceVulkan11Features.create(this.setInfo(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES, VkPhysicalDeviceVulkan11Features.calloc(1).address());
+        var features12 = VkPhysicalDeviceVulkan12Features.create(this.setInfo(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES, VkPhysicalDeviceVulkan12Features.calloc(1).address());
+        var features13 = VkPhysicalDeviceVulkan13Features.create(this.setInfo(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES, VkPhysicalDeviceVulkan13Features.calloc(1).address());
 
         //
-        vkGetPhysicalDeviceFeatures2(cInfo.physicalDevice, features);
+        features2.pNext(features11);
+        features11.pNext(features12.address());
+        features12.pNext(features13.address());
+
+        //
+        vkGetPhysicalDeviceFeatures2(cInfo.physicalDevice, features2);
 
         //
         var deviceInfo = VkDeviceCreateInfo.calloc();
-        deviceInfo.pNext(features);
+        deviceInfo.pNext(features2);
         deviceInfo.sType(VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO);
         deviceInfo.ppEnabledExtensionNames(this.searchExtensions(cInfo));
         deviceInfo.ppEnabledLayerNames(this.searchLayers(cInfo));
