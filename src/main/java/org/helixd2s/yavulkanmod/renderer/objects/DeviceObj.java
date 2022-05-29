@@ -7,13 +7,16 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.*;
 
+import java.awt.*;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.nio.LongBuffer;
 import java.nio.charset.Charset;
 import java.util.List;
 
 import static org.helixd2s.yavulkanmod.renderer.Utils.bb_to_str;
+import static org.helixd2s.yavulkanmod.renderer.Utils.list2FloatBuffer;
 import static org.lwjgl.vulkan.VK10.*;
 import static org.lwjgl.vulkan.VK11.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
 import static org.lwjgl.vulkan.VK11.vkGetPhysicalDeviceFeatures2;
@@ -22,10 +25,18 @@ import static org.lwjgl.vulkan.VK12.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2
 import static org.lwjgl.vulkan.VK13.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
 
 public class DeviceObj extends BaseObj {
+    public class QueueFamilyInfo {
+        int index = 0;
+        List<Float> priorities;
+    };
+
     public class CreateInfo {
         List<String> extensions;
         List<String> layers;
         VkPhysicalDevice physicalDevice;
+
+        //
+        List<QueueFamilyInfo> queueFamilies;
     };
 
     //
@@ -39,6 +50,39 @@ public class DeviceObj extends BaseObj {
     //
     VkExtensionProperties.Buffer extensionsProperties; IntBuffer extensionPropertyCount;
     VkLayerProperties.Buffer layersProperties; IntBuffer layerPropertyCount;
+
+    //
+    LongBuffer commandPools;
+    VkCommandPoolCreateInfo.Buffer commandPoolCreateInfo;
+
+    //
+    IntBuffer queueFamilyIndices;
+    VkDeviceQueueCreateInfo.Buffer deviceQueueInfos;
+
+    //
+    public VkDeviceQueueCreateInfo.Buffer createQueueInfos(@NotNull CreateInfo cInfo) {
+        this.deviceQueueInfos = VkDeviceQueueCreateInfo.calloc(cInfo.queueFamilies.size());
+        this.queueFamilyIndices = IntBuffer.allocate(cInfo.queueFamilies.size());
+        for (int i=0;i<cInfo.queueFamilies.size();i++) {
+            int queueFamilyIndex = cInfo.queueFamilies.get(i).index;
+            var createInfo = deviceQueueInfos.get(i);
+            createInfo.sType(VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO);
+            createInfo.queueFamilyIndex(queueFamilyIndex);
+            createInfo.pQueuePriorities(list2FloatBuffer(cInfo.queueFamilies.get(i).priorities));
+            this.queueFamilyIndices.put(i, cInfo.queueFamilies.get(i).index);
+        };
+        return this.deviceQueueInfos;
+    };
+
+    //
+    public LongBuffer createCommandPools() {
+        this.commandPools = LongBuffer.allocate(this.queueFamilyIndices.capacity());
+        this.commandPoolCreateInfo = VkCommandPoolCreateInfo.calloc(this.queueFamilyIndices.capacity());
+        for (int i=0;i<this.queueFamilyIndices.capacity();i++) {
+            vkCreateCommandPool(this.device, this.commandPoolCreateInfo.get(i), null, this.commandPools.position(i));
+        };
+        return this.commandPools;
+    };
 
     //
     public PointerBuffer searchExtensions(@NotNull CreateInfo cInfo){
@@ -111,6 +155,7 @@ public class DeviceObj extends BaseObj {
         deviceInfo.sType(VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO);
         deviceInfo.ppEnabledExtensionNames(this.searchExtensions(cInfo));
         deviceInfo.ppEnabledLayerNames(this.searchLayers(cInfo));
+        deviceInfo.pQueueCreateInfos(this.createQueueInfos(cInfo));
 
         //
         this.setInfo(VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO, deviceInfo.address());
@@ -118,5 +163,8 @@ public class DeviceObj extends BaseObj {
         //
         vkCreateDevice(cInfo.physicalDevice, deviceInfo, null, pDevice = PointerBuffer.allocateDirect(1));
         this.device = new VkDevice(pDevice.get(), cInfo.physicalDevice, deviceInfo);
+
+        //
+        this.createCommandPools();
     };
 };
