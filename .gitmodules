@@ -7,3 +7,6 @@
 [submodule "submodules/include/tinygltf"]
 	path = submodules/include/tinygltf
 	url = https://github.com/syoyo/tinygltf.git
+[submodule "Alter"]
+	path = Alter
+	url = https://github.com/helixd2s/Alter
