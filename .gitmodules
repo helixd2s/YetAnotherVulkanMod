@@ -1,11 +1,11 @@
 [submodule "submodules/include/vk-utils"]
-	path = submodules/include/vk-utils
+	path = include/vk-utils
 	url = https://github.com/helixd2s/vk-utils
 [submodule "glm"]
 	path = glm
 	url = https://github.com/g-truc/glm.git
 [submodule "submodules/include/tinygltf"]
-	path = submodules/include/tinygltf
+	path = include/tinygltf
 	url = https://github.com/syoyo/tinygltf.git
 [submodule "Alter"]
 	path = Alter

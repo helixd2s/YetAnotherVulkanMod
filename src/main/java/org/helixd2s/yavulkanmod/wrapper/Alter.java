@@ -5,7 +5,7 @@ import org.bytedeco.javacpp.annotation.*;
 
 import java.util.List;
 
-@Platform(include="Alter/include/Alter/Alter.hpp")
+@Platform(include="Alter/Alter.hpp")
 @Namespace("alter")
 public class Alter {
 
