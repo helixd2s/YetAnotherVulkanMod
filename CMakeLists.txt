@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
-project(Alter VERSION 0.1.0)
-set(PROJECT_NAME Alter)
+project(YAV VERSION 0.1.0)
+set(PROJECT_NAME YAV)
 
 #
 MACRO(ADD_MSVC_PRECOMPILED_HEADER PrecompiledHeader PrecompiledSource SourcesVar)
@@ -21,37 +21,13 @@ MACRO(ADD_MSVC_PRECOMPILED_HEADER PrecompiledHeader PrecompiledSource SourcesVar
 ENDMACRO(ADD_MSVC_PRECOMPILED_HEADER)
 
 # 
-IF (WIN32)
-  set(ENV{ASAN_OPTIONS} [windows_hook_legacy_allocators=true])
-
-  #
-  IF(NOT DEFINED VCPKG_PATH OR NOT DEFINED ${VCPKG_PATH})
-    set (VCPKG_PATH "C:/vcpkg/")
-  ENDIF()
-
-  # trying load GLFW3 from VCPKG in Windows
-  IF(NOT DEFINED CMAKE_TOOLCHAIN_FILE OR NOT DEFINED ${CMAKE_TOOLCHAIN_FILE})
-    set (CMAKE_TOOLCHAIN_FILE "${VCPKG_PATH}/scripts/buildsystems/vcpkg.cmake")
-  ENDIF()
-
-  IF(NOT DEFINED CMAKE_MODULE_PATH OR NOT DEFINED ${CMAKE_MODULE_PATH})
-    set (CMAKE_MODULE_PATH "${VCPKG_PATH}/installed/x64-windows")
-  ENDIF()
-  
-  IF(NOT DEFINED glfw3_DIR OR NOT DEFINED ${glfw3_DIR})
-    set (glfw3_DIR "${CMAKE_MODULE_PATH}/share/glfw3")
-  ENDIF()
-ENDIF()
-
-# 
 find_package(Vulkan REQUIRED FATAL_ERROR)
-find_package(glfw3 REQUIRED)
 find_package(JNI REQUIRED)
 
 # 
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_CXX_STANDARD 23)
-set(_src_root_path "${PROJECT_SOURCE_DIR}/Alter")
+set(_src_root_path "${PROJECT_SOURCE_DIR}")
 file(GLOB_RECURSE _source_list 
   LIST_DIRECTORIES false
   "${_src_root_path}/include/vk-utils/*.inl"
@@ -68,8 +44,7 @@ file(GLOB_RECURSE _source_list
   "${_src_root_path}/Alter/src/Alter/*.cpp"
   "${_src_root_path}/Alter/src/Alter/*.c"
   
-  "${_src_root_path}/../src/main/java/org/helixd2s/yavulkanmod/wrapper/*.cpp
-  "${_src_root_path}/../src/main/java/*.cpp
+  "${_src_root_path}/src/main/cpp/*.cpp"
 )
 
 #
@@ -84,7 +59,7 @@ ENDIF()
 
 # 
 add_library(${PROJECT_NAME} SHARED ${_source_list})
-target_compile_definitions(${PROJECT_NAME} PUBLIC UNICODE ALT_USE_ROBIN_HOOD USE_CMAKE_PCH VULKAN_HPP_NO_CONSTRUCTORS NOMINMAX ALT_ENABLE_VMA ALT_ENABLE_GLTF CPP21_DEBUG_MEMORY TINYGLTF_USE_CPP14 ANAMED=alter ${PLATFORM_DEF})
+target_compile_definitions(${PROJECT_NAME} PUBLIC ALT_USE_ROBIN_HOOD USE_CMAKE_PCH VULKAN_HPP_NO_CONSTRUCTORS NOMINMAX ALT_ENABLE_VMA ALT_ENABLE_GLTF CPP21_DEBUG_MEMORY TINYGLTF_USE_CPP14 ANAMED=alter ${PLATFORM_DEF})
 target_include_directories(${PROJECT_NAME} PUBLIC 
   ${PROJECT_SOURCE_DIR}/Alter/include
   ${PROJECT_SOURCE_DIR}/include 
@@ -112,7 +87,7 @@ set (HSOURCES "submodules/include/vk-utils/cpp21/core.hpp" "Alter/include/Alter/
 ADD_MSVC_PRECOMPILED_HEADER("Alter/include/cmake_pch.hxx" "Alter/include/cmake_pch.cxx" HSOURCES)
 
 #
-target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS} ${Vulkan_LIBRARIES} ${JNI_LIBRARIES} glfw )
+target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS} ${Vulkan_LIBRARIES} ${JNI_LIBRARIES} )
 
 # 
 if (MSVC)
