@@ -1,6 +1,11 @@
 plugins {
 	id 'fabric-loom' version '0.11-SNAPSHOT'
 	id 'maven-publish'
+	id 'org.bytedeco.gradle-javacpp-build' version "1.5.7"
+}
+
+ext {
+	javacppPlatform = 'windows-x86_64' // or any other platform, defaults to Loader.getPlatform()
 }
 
 //
@@ -21,6 +26,9 @@ project.ext.linuxNatives = "natives-linux"
 dependencies {
 	// our important library!
 	include(implementation("org.bytedeco:javacpp:1.5.7"))
+	include(implementation("org.bytedeco:javacpp-presets:1.5.7"))
+	include(implementation("org.bytedeco:javacpp-platform:1.5.7"))
+	include(implementation("org.bytedeco:javacpp-presets-platform:1.5.7"))
 
 	//
 	include(implementation("org.lwjgl:lwjgl:$lwjglVersion"))
