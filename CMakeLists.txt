@@ -41,8 +41,6 @@ file(GLOB_RECURSE _source_list
   "${_src_root_path}/Alter/include/Alter/*.hpp"
   "${_src_root_path}/Alter/include/Alter/*.h"
   "${_src_root_path}/Alter/src/Alter/*.inl"
-  "${_src_root_path}/Alter/src/Alter/*.cpp"
-  "${_src_root_path}/Alter/src/Alter/*.c"
   
   "${_src_root_path}/src/main/cpp/*.cpp"
 )
@@ -69,7 +67,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   ${PROJECT_SOURCE_DIR}/generator/include 
   ${PROJECT_SOURCE_DIR}/robin-hood-hashing/src/include
   ${PROJECT_SOURCE_DIR}/VulkanMemoryAllocator/include
-  ${PROJECT_SOURCE_DIR}/glm/glm
+  ${PROJECT_SOURCE_DIR}/glm
   ${Vulkan_INCLUDE_DIRS}
   ${JNI_INCLUDE_DIRS}
 )
