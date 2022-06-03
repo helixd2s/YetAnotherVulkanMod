@@ -62,6 +62,16 @@ dependencies {
 	include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$linuxNatives"))
 }
 
+
+
+tasks.withType(org.bytedeco.gradle.javacpp.BuildTask).configureEach {
+	// set here default values for all build tasks below, typically just includePath and linkPath,
+	// but also properties to set the path to the NDK and its compiler in the case of Android
+	generate = true;
+	compile = false;
+	outputDirectory = new File("src/main/cpp");
+}
+
 repositories {
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
