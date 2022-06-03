@@ -111,6 +111,22 @@ build/*
 */build/
 */build/*
 
+jars
+jars/
+jars/*
+
+/jars
+/jars/
+/jars/*
+
+./jars
+./jars/
+./jars/*
+
+*/jars
+*/jars/
+*/jars/*
+
 submodules
 submodules/
 submodules/*
