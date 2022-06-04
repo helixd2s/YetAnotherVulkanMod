@@ -102,15 +102,18 @@
 static JavaVM* JavaCPP_vm = NULL;
 static bool JavaCPP_haveAllocObject = false;
 static bool JavaCPP_haveNonvirtual = false;
-static const char* JavaCPP_classNames[7] = {
+static const char* JavaCPP_classNames[10] = {
         "org/bytedeco/javacpp/Pointer",
         "java/lang/String",
         "org/bytedeco/javacpp/Pointer$NativeDeallocator",
         "org/bytedeco/javacpp/Loader",
         "java/nio/Buffer",
         "java/lang/Object",
-        "java/nio/charset/Charset" };
-static jclass JavaCPP_classes[7] = { NULL };
+        "java/nio/charset/Charset",
+        "java/lang/NullPointerException",
+        "org/helixd2s/yavulkanmod/alter/Alter$DeviceObj",
+        "java/lang/RuntimeException" };
+static jclass JavaCPP_classes[10] = { NULL };
 static jfieldID JavaCPP_addressFID = NULL;
 static jfieldID JavaCPP_positionFID = NULL;
 static jfieldID JavaCPP_limitFID = NULL;
@@ -262,6 +265,47 @@ static JavaCPP_noinline void JavaCPP_initPointer(JNIEnv* env, jobject obj, const
     }
 }
 
+#include <string>
+static JavaCPP_noinline jstring JavaCPP_createStringFromBytes(JNIEnv* env, const char* ptr, size_t length) {
+    if (ptr == NULL) {
+        return NULL;
+    }
+#ifdef MODIFIED_UTF8_STRING
+    return env->NewStringUTF(ptr);
+#else
+    jbyteArray bytes = env->NewByteArray(length < INT_MAX ? length : INT_MAX);
+    env->SetByteArrayRegion(bytes, 0, length < INT_MAX ? length : INT_MAX, (signed char*)ptr);
+#ifdef STRING_BYTES_CHARSET
+    jstring s = (jstring)env->NewObject(JavaCPP_getClass(env, 1), JavaCPP_stringWithCharsetMID, bytes, JavaCPP_stringBytesCharset);
+#else
+    jstring s = (jstring)env->NewObject(JavaCPP_getClass(env, 1), JavaCPP_stringMID, bytes);
+#endif // STRING_BYTES_CHARSET
+    env->DeleteLocalRef(bytes);
+    return s;
+#endif // MODIFIED_UTF8_STRING
+}
+
+static JavaCPP_noinline jstring JavaCPP_createStringFromBytes(JNIEnv* env, const char* ptr) {
+    if (ptr == NULL) {
+        return NULL;
+    }
+    return JavaCPP_createStringFromBytes(env, ptr, std::char_traits<char>::length(ptr));
+}
+
+static JavaCPP_noinline jstring JavaCPP_createStringFromUTF16(JNIEnv* env, const unsigned short* ptr, size_t length) {
+    if (ptr == NULL) {
+        return NULL;
+    }
+    return env->NewString(ptr, length);
+}
+
+static JavaCPP_noinline jstring JavaCPP_createStringFromUTF16(JNIEnv* env, const unsigned short* ptr) {
+    if (ptr == NULL) {
+        return NULL;
+    }
+    return JavaCPP_createStringFromUTF16(env, ptr, std::char_traits<unsigned short>::length(ptr));
+}
+
 class JavaCPP_hidden JavaCPP_exception : public std::exception {
 public:
     JavaCPP_exception(const char* str) throw() {
@@ -276,27 +320,367 @@ public:
     char msg[1024];
 };
 
+#ifndef GENERIC_EXCEPTION_CLASS
+#define GENERIC_EXCEPTION_CLASS std::exception
+#endif
+#ifndef GENERIC_EXCEPTION_TOSTRING
+#define GENERIC_EXCEPTION_TOSTRING what()
+#endif
+static JavaCPP_noinline jthrowable JavaCPP_handleException(JNIEnv* env, int i) {
+    jstring str = NULL;
+    try {
+        throw;
+    } catch (GENERIC_EXCEPTION_CLASS& e) {
+        str = JavaCPP_createStringFromBytes(env, e.GENERIC_EXCEPTION_TOSTRING);
+    } catch (...) {
+        str = JavaCPP_createStringFromBytes(env, "Unknown exception.");
+    }
+    jmethodID mid = JavaCPP_getMethodID(env, i, "<init>", "(Ljava/lang/String;)V");
+    if (mid == NULL) {
+        return NULL;
+    }
+    return (jthrowable)env->NewObject(JavaCPP_getClass(env, i), mid, str);
+}
+
+static JavaCPP_noinline void* JavaCPP_getPointerOwner(JNIEnv* env, jobject obj) {
+    if (obj != NULL) {
+        jobject deallocator = env->GetObjectField(obj, JavaCPP_deallocatorFID);
+        if (deallocator != NULL && env->IsInstanceOf(deallocator, JavaCPP_getClass(env, 2))) {
+            return jlong_to_ptr(env->GetLongField(deallocator, JavaCPP_ownerAddressFID));
+        }
+    }
+    return NULL;
+}
+
+#include <vector>
+template<typename P, typename T = P, typename A = std::allocator<T> > class JavaCPP_hidden VectorAdapter {
+public:
+    VectorAdapter(const P* ptr, typename std::vector<T,A>::size_type size, void* owner) : ptr((P*)ptr), size(size), owner(owner),
+        vec2(ptr ? std::vector<T,A>((P*)ptr, (P*)ptr + size) : std::vector<T,A>()), vec(vec2) { }
+    VectorAdapter(const std::vector<T,A>& vec) : ptr(0), size(0), owner(0), vec2(vec), vec(vec2) { }
+    VectorAdapter(      std::vector<T,A>& vec) : ptr(0), size(0), owner(0), vec(vec) { }
+    VectorAdapter(const std::vector<T,A>* vec) : ptr(0), size(0), owner(0), vec(*(std::vector<T,A>*)vec) { }
+    void assign(P* ptr, typename std::vector<T,A>::size_type size, void* owner) {
+        this->ptr = ptr;
+        this->size = size;
+        this->owner = owner;
+        vec.assign(ptr, ptr + size);
+    }
+    static void deallocate(void* owner) { operator delete(owner); }
+    operator P*() {
+        if (vec.size() > size) {
+            ptr = (P*)(operator new(sizeof(P) * vec.size(), std::nothrow_t()));
+        }
+        if (ptr) {
+            std::uninitialized_copy(vec.begin(), vec.end(), ptr);
+        }
+        size = vec.size();
+        owner = ptr;
+        return ptr;
+    }
+    operator const P*()        { size = vec.size(); return &vec[0]; }
+    operator std::vector<T,A>&() { return vec; }
+    operator std::vector<T,A>*() { return ptr ? &vec : 0; }
+    P* ptr;
+    typename std::vector<T,A>::size_type size;
+    void* owner;
+    std::vector<T,A> vec2;
+    std::vector<T,A>& vec;
+};
+
+#include <string>
+template<typename T = char> class JavaCPP_hidden StringAdapter {
+public:
+    StringAdapter(const          char* ptr, typename std::basic_string<T>::size_type size, void* owner) : ptr((T*)ptr), size(size), owner(owner),
+        str2(ptr ? (T*)ptr : "", ptr ? (size > 0 ? size : strlen((char*)ptr)) : 0), str(str2) { }
+    StringAdapter(const signed   char* ptr, typename std::basic_string<T>::size_type size, void* owner) : ptr((T*)ptr), size(size), owner(owner),
+        str2(ptr ? (T*)ptr : "", ptr ? (size > 0 ? size : strlen((char*)ptr)) : 0), str(str2) { }
+    StringAdapter(const unsigned char* ptr, typename std::basic_string<T>::size_type size, void* owner) : ptr((T*)ptr), size(size), owner(owner),
+        str2(ptr ? (T*)ptr : "", ptr ? (size > 0 ? size : strlen((char*)ptr)) : 0), str(str2) { }
+    StringAdapter(const       wchar_t* ptr, typename std::basic_string<T>::size_type size, void* owner) : ptr((T*)ptr), size(size), owner(owner),
+        str2(ptr ? (T*)ptr : L"", ptr ? (size > 0 ? size : wcslen((wchar_t*)ptr)) : 0), str(str2) { }
+    StringAdapter(const unsigned short* ptr, typename std::basic_string<T>::size_type size, void* owner) : ptr((T*)ptr), size(size), owner(owner),
+        str2(ptr ? (T*)ptr : L"", ptr ? (size > 0 ? size : wcslen((wchar_t*)ptr)) : 0), str(str2) { }
+    StringAdapter(const   signed   int* ptr, typename std::basic_string<T>::size_type size, void* owner) : ptr((T*)ptr), size(size), owner(owner),
+        str2(ptr ? (T*)ptr : L"", ptr ? (size > 0 ? size : wcslen((wchar_t*)ptr)) : 0), str(str2) { }
+    StringAdapter(const std::basic_string<T>& str) : ptr(0), size(0), owner(0), str2(str), str(str2) { }
+    StringAdapter(      std::basic_string<T>& str) : ptr(0), size(0), owner(0), str(str) { }
+    StringAdapter(const std::basic_string<T>* str) : ptr(0), size(0), owner(0), str(*(std::basic_string<T>*)str) { }
+    void assign(char* ptr, typename std::basic_string<T>::size_type size, void* owner) {
+        this->ptr = ptr;
+        this->size = size;
+        this->owner = owner;
+        str.assign(ptr ? ptr : "", ptr ? (size > 0 ? size : strlen((char*)ptr)) : 0);
+    }
+    void assign(const          char* ptr, typename std::basic_string<T>::size_type size, void* owner) { assign((char*)ptr, size, owner); }
+    void assign(const signed   char* ptr, typename std::basic_string<T>::size_type size, void* owner) { assign((char*)ptr, size, owner); }
+    void assign(const unsigned char* ptr, typename std::basic_string<T>::size_type size, void* owner) { assign((char*)ptr, size, owner); }
+    void assign(wchar_t* ptr, typename std::basic_string<T>::size_type size, void* owner) {
+        this->ptr = ptr;
+        this->size = size;
+        this->owner = owner;
+        str.assign(ptr ? ptr : L"", ptr ? (size > 0 ? size : wcslen((wchar_t*)ptr)) : 0);
+    }
+    void assign(const        wchar_t* ptr, typename std::basic_string<T>::size_type size, void* owner) { assign((wchar_t*)ptr, size, owner); }
+    void assign(const unsigned short* ptr, typename std::basic_string<T>::size_type size, void* owner) { assign((wchar_t*)ptr, size, owner); }
+    void assign(const   signed   int* ptr, typename std::basic_string<T>::size_type size, void* owner) { assign((wchar_t*)ptr, size, owner); }
+    static void deallocate(void* owner) { delete[] (T*)owner; }
+    operator char*() {
+        const char* data = str.data();
+        if (str.size() > size) {
+            ptr = new (std::nothrow) char[str.size()+1];
+            if (ptr) memset(ptr, 0, str.size()+1);
+        }
+        if (ptr && memcmp(ptr, data, str.size()) != 0) {
+            memcpy(ptr, data, str.size());
+            if (size > str.size()) ptr[str.size()] = 0;
+        }
+        size = str.size();
+        owner = ptr;
+        return ptr;
+    }
+    operator       signed   char*() { return (signed   char*)(operator char*)(); }
+    operator       unsigned char*() { return (unsigned char*)(operator char*)(); }
+    operator const          char*() { size = str.size(); return                 str.c_str(); }
+    operator const signed   char*() { size = str.size(); return (signed   char*)str.c_str(); }
+    operator const unsigned char*() { size = str.size(); return (unsigned char*)str.c_str(); }
+    operator wchar_t*() {
+        const wchar_t* data = str.data();
+        if (str.size() > size) {
+            ptr = new (std::nothrow) wchar_t[str.size()+1];
+            if (ptr) memset(ptr, 0, sizeof(wchar_t) * (str.size()+1));
+        }
+        if (ptr && memcmp(ptr, data, sizeof(wchar_t) * str.size()) != 0) {
+            memcpy(ptr, data, sizeof(wchar_t) * str.size());
+            if (size > str.size()) ptr[str.size()] = 0;
+        }
+        size = str.size();
+        owner = ptr;
+        return ptr;
+    }
+    operator     unsigned   short*() { return (unsigned short*)(operator wchar_t*)(); }
+    operator       signed     int*() { return (  signed   int*)(operator wchar_t*)(); }
+    operator const        wchar_t*() { size = str.size(); return                  str.c_str(); }
+    operator const unsigned short*() { size = str.size(); return (unsigned short*)str.c_str(); }
+    operator const   signed   int*() { size = str.size(); return (  signed   int*)str.c_str(); }
+    operator         std::basic_string<T>&() { return str; }
+    operator         std::basic_string<T>*() { return ptr ? &str : 0; }
+    T* ptr;
+    typename std::basic_string<T>::size_type size;
+    void* owner;
+    std::basic_string<T> str2;
+    std::basic_string<T>& str;
+};
+
+template<typename P, typename T = P> class JavaCPP_hidden BasicStringAdapter {
+public:
+    BasicStringAdapter(const P* ptr, typename std::basic_string<T>::size_type size, void* owner) : str(str2) { assign(const_cast<P*>(ptr), size, owner); }
+
+    BasicStringAdapter(const std::basic_string<T>& str) : size(0), owner(NULL), ptr(NULL), str2(str), str(str2) { }
+    BasicStringAdapter(      std::basic_string<T>& str) : size(0), owner(NULL), ptr(NULL), str(str) { }
+    BasicStringAdapter(const std::basic_string<T>* str) : size(0), owner(NULL), ptr(NULL), str(*const_cast<std::basic_string<T>*>(str)) { }
+
+    static void deallocate(void* owner) { delete[] static_cast<T*>(owner); }
+
+    operator P*() {
+        const T* data = str.data();
+        if (str.size() > size) {
+            ptr = new (std::nothrow) T[str.size() + 1]();
+        }
+        if (ptr && memcmp(ptr, data, sizeof(T) * str.size()) != 0) {
+            memcpy(ptr, data, sizeof(T) * str.size());
+            if (size > str.size()) ptr[str.size()] = 0;
+        }
+        size = str.size();
+        owner = ptr;
+        return reinterpret_cast<P*>(ptr);
+    }
+    operator const P*() {
+        size = str.size();
+        return reinterpret_cast<const P*>(str.c_str());
+    }
+
+    operator std::basic_string<T>&() { return str; }
+    operator std::basic_string<T>*() { return ptr ? &str : NULL; }
+
+    void assign(P* ptr, typename std::basic_string<T>::size_type size, void* owner) {
+        this->ptr = reinterpret_cast<T*>(ptr);
+        this->size = size;
+        this->owner = owner;
+        if (this->ptr) {
+            str.assign(this->ptr, size > 0 ? size : std::char_traits<T>::length(this->ptr));
+        } else {
+            str.clear();
+        }
+    }
+
+    typename std::basic_string<T>::size_type size;
+    void* owner;
+
+private:
+    T* ptr;
+    std::basic_string<T> str2;
+    std::basic_string<T>& str;
+};
+
+#ifdef SHARED_PTR_NAMESPACE
+template<class T> class SharedPtrAdapter {
+public:
+    typedef SHARED_PTR_NAMESPACE::shared_ptr<T> S;
+    SharedPtrAdapter(const T* ptr, size_t size, void* owner) : ptr((T*)ptr), size(size), owner(owner),
+            sharedPtr2(owner != NULL && owner != ptr ? *(S*)owner : S((T*)ptr)), sharedPtr(sharedPtr2) { }
+    SharedPtrAdapter(const S& sharedPtr) : ptr(0), size(0), owner(0), sharedPtr2(sharedPtr), sharedPtr(sharedPtr2) { }
+    SharedPtrAdapter(      S& sharedPtr) : ptr(0), size(0), owner(0), sharedPtr(sharedPtr) { }
+    SharedPtrAdapter(const S* sharedPtr) : ptr(0), size(0), owner(0), sharedPtr(*(S*)sharedPtr) { }
+    void assign(T* ptr, size_t size, void* owner) {
+        this->ptr = ptr;
+        this->size = size;
+        this->owner = owner;
+        this->sharedPtr = owner != NULL && owner != ptr ? *(S*)owner : S((T*)ptr);
+    }
+    static void deallocate(void* owner) { delete (S*)owner; }
+    operator typename SHARED_PTR_NAMESPACE::remove_const<T>::type*() {
+        ptr = sharedPtr.get();
+        if (owner == NULL || owner == ptr) {
+            owner = new S(sharedPtr);
+        }
+        return (typename SHARED_PTR_NAMESPACE::remove_const<T>::type*)ptr;
+    }
+    operator S&() { return sharedPtr; }
+    operator S*() { return &sharedPtr; }
+    T* ptr;
+    size_t size;
+    void* owner;
+    S sharedPtr2;
+    S& sharedPtr;
+};
+#endif
+
+#ifdef UNIQUE_PTR_NAMESPACE
+template<class T, class D = UNIQUE_PTR_NAMESPACE::default_delete<T> > class UniquePtrAdapter {
+public:
+    typedef UNIQUE_PTR_NAMESPACE::unique_ptr<T,D> U;
+    UniquePtrAdapter(const T* ptr, size_t size, void* owner) : ptr((T*)ptr), size(size), owner(owner),
+            uniquePtr2(owner != NULL && owner != ptr ? U() : U((T*)ptr)),
+            uniquePtr(owner != NULL && owner != ptr ? *(U*)owner : uniquePtr2) { }
+    UniquePtrAdapter(U&& uniquePtr) : ptr(0), size(0), owner(0), uniquePtr2(UNIQUE_PTR_NAMESPACE::move(uniquePtr)), uniquePtr(uniquePtr2) { }
+    UniquePtrAdapter(const U& uniquePtr) : ptr(0), size(0), owner(0), uniquePtr2(U(NULL, D())), uniquePtr((U&)uniquePtr) { }
+    UniquePtrAdapter(      U& uniquePtr) : ptr(0), size(0), owner(0), uniquePtr2(U(NULL, D())), uniquePtr(uniquePtr) { }
+    UniquePtrAdapter(const U* uniquePtr) : ptr(0), size(0), owner(0), uniquePtr2(U(NULL, D())), uniquePtr(*(U*)uniquePtr) { }
+    void assign(T* ptr, size_t size, void* owner) {
+        this->ptr = ptr;
+        this->size = size;
+        this->owner = owner;
+        this->uniquePtr = owner != NULL && owner != ptr ? *(U*)owner : U((T*)ptr);
+    }
+    static void deallocate(void* owner) { delete (U*)owner; }
+    operator typename UNIQUE_PTR_NAMESPACE::remove_const<T>::type*() {
+        ptr = uniquePtr.get();
+        if (ptr == uniquePtr2.get() && (owner == NULL || owner == ptr)) {
+            // only move the pointer if we actually own it through uniquePtr2
+            owner = new U(UNIQUE_PTR_NAMESPACE::move(uniquePtr));
+        }
+        return (typename UNIQUE_PTR_NAMESPACE::remove_const<T>::type*)ptr;
+    }
+    operator U&() const { return uniquePtr; }
+    operator U&&() { return UNIQUE_PTR_NAMESPACE::move(uniquePtr); }
+    operator U*() { return &uniquePtr; }
+    T* ptr;
+    size_t size;
+    void* owner;
+    U uniquePtr2;
+    U& uniquePtr;
+};
+#endif
+
+#if __cplusplus >= 201103L || _MSC_VER >= 1900
+#include <utility>
+template<class T> class MoveAdapter {
+public:
+    MoveAdapter(const T* ptr, size_t size, void* owner) : ptr(&movedPtr), size(size), owner(owner), movedPtr(std::move(*(T*)ptr)) { }
+    MoveAdapter(const T& ptr) : ptr(&movedPtr), size(0), owner(0), movedPtr(std::move((T&)ptr)) { }
+    MoveAdapter(T&& ptr) : ptr(&movedPtr), size(0), owner(0), movedPtr((T&&)ptr) { }
+    void assign(T* ptr, size_t size, void* owner) {
+        this->ptr = &this->movedPtr;
+        this->size = size;
+        this->owner = owner;
+        this->movedPtr = std::move(*ptr);
+    }
+    static void deallocate(void* owner) { delete (T*)owner; }
+    operator T*() {
+        ptr = new T(std::move(movedPtr));
+        owner = ptr;
+        return ptr;
+    }
+    operator const T*() { return ptr; }
+    operator T&&() { return std::move(movedPtr); }
+    T* ptr;
+    size_t size;
+    void* owner;
+    T movedPtr;
+};
+#endif
+
+#ifdef OPTIONAL_NAMESPACE
+template<class T> class OptionalAdapter {
+public:
+    typedef OPTIONAL_NAMESPACE::optional<T> O;
+    OptionalAdapter(const T* ptr, size_t size, void* owner) : ptr((T*)ptr), size(size), owner(owner),
+            optional2(owner != NULL && owner != ptr ? *(O*)owner : (ptr ? O(*(T*)ptr) : O())), optional(optional2) { }
+    OptionalAdapter(const O& optional) : ptr(0), size(0), owner(0), optional2(optional), optional(optional2) { }
+    OptionalAdapter(      O& optional) : ptr(0), size(0), owner(0), optional(optional) { }
+    OptionalAdapter(const O* optional) : ptr(0), size(0), owner(0), optional(*(O*)optional) { }
+    void assign(T* ptr, size_t size, void* owner) {
+        this->ptr = ptr;
+        this->size = size;
+        this->owner = owner;
+        this->optional = owner != NULL && owner != ptr ? *(O*)owner : (ptr ? O(*(T*)ptr) : O());
+    }
+    static void deallocate(void* owner) { delete (O*)owner; }
+    operator typename OPTIONAL_NAMESPACE::remove_const<T>::type*() {
+        if (owner == NULL || owner == ptr) {
+            owner = new O(optional);
+        }
+        ptr = (*(O*)owner).has_value() ? (*(O*)owner).operator->() : NULL;
+        return (typename OPTIONAL_NAMESPACE::remove_const<T>::type*)ptr;
+    }
+    operator O&() { return optional; }
+    operator O*() { return &optional; }
+    T* ptr;
+    size_t size;
+    void* owner;
+    O optional2;
+    O& optional;
+};
+#endif
 
 
 
+static void JavaCPP_org_helixd2s_yavulkanmod_alter_Alter_00024DeviceObj_deallocate(void *p) { delete (::alter::DeviceObj*)p; }
 
-static const char* JavaCPP_members[7][1] = {
+static const char* JavaCPP_members[10][2] = {
         { NULL },
         { NULL },
         { NULL },
         { NULL },
         { NULL },
         { NULL },
+        { NULL },
+        { NULL },
+        { "sizeof" },
         { NULL } };
-static int JavaCPP_offsets[7][1] = {
+static int JavaCPP_offsets[10][2] = {
         { -1 },
         { -1 },
         { -1 },
         { -1 },
         { -1 },
         { -1 },
+        { -1 },
+        { -1 },
+        { sizeof(::alter::DeviceObj) },
         { -1 } };
-static int JavaCPP_memberOffsetSizes[7] = { 1, 1, 1, 1, 1, 1, 1 };
+static int JavaCPP_memberOffsetSizes[10] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
 extern "C" {
 
@@ -322,7 +706,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     if (putMemberOffsetMID == NULL) {
         return JNI_ERR;
     }
-    for (int i = 0; i < 7 && !env->ExceptionCheck(); i++) {
+    for (int i = 0; i < 10 && !env->ExceptionCheck(); i++) {
         for (int j = 0; j < JavaCPP_memberOffsetSizes[i] && !env->ExceptionCheck(); j++) {
             if (env->PushLocalFrame(3) == 0) {
                 jvalue args[3];
@@ -442,7 +826,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
         JavaCPP_log("Could not get JNIEnv for JNI_VERSION_1_6 inside JNI_OnUnLoad().");
         return;
     }
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 10; i++) {
         env->DeleteWeakGlobalRef((jweak)JavaCPP_classes[i]);
         JavaCPP_classes[i] = NULL;
     }
@@ -453,6 +837,61 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     JNI_OnUnload_jnijavacpp(vm, reserved);
     JavaCPP_vm = NULL;
 }
+
+JNIEXPORT jobject JNICALL Java_org_helixd2s_yavulkanmod_alter_Alter_00024DeviceObj_make(JNIEnv* env, jclass cls, jobject arg0, jobject arg1) {
+    ::alter::Handle* ptr0 = arg0 == NULL ? NULL : (::alter::Handle*)jlong_to_ptr(env->GetLongField(arg0, JavaCPP_addressFID));
+    if (ptr0 == NULL) {
+        env->ThrowNew(JavaCPP_getClass(env, 7), "Pointer address of argument 0 is NULL.");
+        return 0;
+    }
+    jlong position0 = arg0 == NULL ? 0 : env->GetLongField(arg0, JavaCPP_positionFID);
+    ptr0 += position0;
+    ::alter::DeviceCreateInfo* ptr1 = arg1 == NULL ? NULL : (::alter::DeviceCreateInfo*)jlong_to_ptr(env->GetLongField(arg1, JavaCPP_addressFID));
+    if (ptr1 == NULL) {
+        env->ThrowNew(JavaCPP_getClass(env, 7), "Pointer address of argument 1 is NULL.");
+        return 0;
+    }
+    jlong position1 = arg1 == NULL ? 0 : env->GetLongField(arg1, JavaCPP_positionFID);
+    ptr1 += position1;
+    jobject rarg = NULL;
+    ::alter::DeviceObj* rptr;
+    jthrowable exc = NULL;
+    try {
+        SharedPtrAdapter< ::alter::DeviceObj > radapter(::alter::DeviceObj::make(*ptr0, *ptr1));
+        rptr = radapter;
+        jlong rcapacity = (jlong)radapter.size;
+        void* rowner = radapter.owner;
+        void (*deallocator)(void*) = rowner != NULL ? &SharedPtrAdapter< ::alter::DeviceObj >::deallocate : 0;
+        if (rptr != NULL) {
+            rarg = JavaCPP_createPointer(env, 8);
+            if (rarg != NULL) {
+                JavaCPP_initPointer(env, rarg, rptr, rcapacity, rowner, deallocator);
+            }
+        }
+    } catch (...) {
+        exc = JavaCPP_handleException(env, 9);
+    }
+
+    if (exc != NULL) {
+        env->Throw(exc);
+    }
+    return rarg;
+}
+JNIEXPORT void JNICALL Java_org_helixd2s_yavulkanmod_alter_Alter_00024DeviceObj_allocate(JNIEnv* env, jobject obj) {
+    jthrowable exc = NULL;
+    try {
+        ::alter::DeviceObj* rptr = new ::alter::DeviceObj();
+        jlong rcapacity = 1;
+        JavaCPP_initPointer(env, obj, rptr, rcapacity, rptr, &JavaCPP_org_helixd2s_yavulkanmod_alter_Alter_00024DeviceObj_deallocate);
+    } catch (...) {
+        exc = JavaCPP_handleException(env, 9);
+    }
+
+    if (exc != NULL) {
+        env->Throw(exc);
+    }
+}
+
 
 }
 

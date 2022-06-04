@@ -117,4 +117,20 @@ public class Alter {
         @Name("physicalDeviceIndex") @MemberSetter public native void putPhysicalDeviceIndex(int index);
     };
 
+
+    @Name("alter::Handle")
+    public static class Handle extends Pointer {
+        static { Loader.load(); }
+    };
+
+    @Name("alter::DeviceObj")
+    public static class DeviceObj extends Pointer {
+        static { Loader.load(); }
+        public DeviceObj() { allocate(); }
+        private native void allocate();
+
+        @Name("make")
+        native static @SharedPtr DeviceObj make(@ByRef Handle handle, @ByRef DeviceCreateInfo cInfo);
+    };
+
 }
