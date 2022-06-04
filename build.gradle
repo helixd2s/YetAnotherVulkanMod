@@ -1,12 +1,12 @@
 plugins {
-	id 'fabric-loom' version '0.11-SNAPSHOT'
+	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
-	id 'org.bytedeco.gradle-javacpp-build' version "1.5.7"
+	//id 'org.bytedeco.gradle-javacpp-build' version "1.5.7"
 }
 
-ext {
-	javacppPlatform = 'windows-x86_64' // or any other platform, defaults to Loader.getPlatform()
-}
+//ext {
+	//javacppPlatform = 'windows-x86_64' // or any other platform, defaults to Loader.getPlatform()
+//}
 
 //
 sourceCompatibility = JavaVersion.VERSION_17
@@ -64,13 +64,13 @@ dependencies {
 
 
 
-tasks.withType(org.bytedeco.gradle.javacpp.BuildTask).configureEach {
+//tasks.withType(org.bytedeco.gradle.javacpp.BuildTask).configureEach {
 	// set here default values for all build tasks below, typically just includePath and linkPath,
 	// but also properties to set the path to the NDK and its compiler in the case of Android
-	generate = true;
-	compile = false;
-	outputDirectory = new File("src/main/cpp");
-}
+	//generate = true;
+	//compile = false;
+	//outputDirectory = new File("src/main/cpp");
+//}
 
 repositories {
 	// Add repositories to retrieve artifacts from in here.
