@@ -90,7 +90,7 @@ tasks.withType(org.bytedeco.gradle.javacpp.BuildTask).configureEach {
 	generate = true;
 	compile = false;
 	outputDirectory = file("$buildDir/../src/main/cpp");
-	classOrPackageNames = ['org.helixd2s.yavulkanmod.wrapper.*'];
+	classOrPackageNames = ['org.helixd2s.yavulkanmod.alter.*'];
 }
 
 tasks.withType(JavaCompile).configureEach {

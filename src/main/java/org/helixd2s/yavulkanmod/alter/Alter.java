@@ -1,12 +1,10 @@
-package org.helixd2s.yavulkanmod.wrapper;
+package org.helixd2s.yavulkanmod.alter;
 
-import org.bytedeco.javacpp.presets.*;
 import org.bytedeco.javacpp.*;
 import org.bytedeco.javacpp.annotation.*;
 //import org.lwjgl.vulkan.VkDescriptorImageInfo; // IDK how to use Java Libraries with JavaCpp
 import org.bytedeco.opencv.opencv_text.FloatVector;
 import org.bytedeco.opencv.opencv_core.StringVector;
-import java.util.List;
 
 @Platform(include="Alter/Alter.hpp")
 public class Alter {
