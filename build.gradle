@@ -1,12 +1,12 @@
 plugins {
 	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
-	//id 'org.bytedeco.gradle-javacpp-build' version "1.5.7"
+	id 'org.bytedeco.gradle-javacpp-build' version "1.5.8-SNAPSHOT"
 }
 
-//ext {
-	//javacppPlatform = 'windows-x86_64' // or any other platform, defaults to Loader.getPlatform()
-//}
+ext {
+	javacppPlatform = 'windows-x86_64' // or any other platform, defaults to Loader.getPlatform()
+}
 
 //
 sourceCompatibility = JavaVersion.VERSION_17
@@ -23,12 +23,16 @@ project.ext.jomlVersion = "1.10.4"
 project.ext.winNatives = "natives-windows"
 project.ext.linuxNatives = "natives-linux"
 
+repositories {
+	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+
 dependencies {
 	// our important library!
-	include(implementation("org.bytedeco:javacpp:1.5.7"))
-	include(implementation("org.bytedeco:javacpp-presets:1.5.7"))
-	include(implementation("org.bytedeco:javacpp-platform:1.5.7"))
-	include(implementation("org.bytedeco:javacpp-presets-platform:1.5.7"))
+	include(implementation("org.bytedeco:javacpp:1.5.8-SNAPSHOT"))
+	include(implementation("org.bytedeco:javacpp-presets:1.5.8-SNAPSHOT"))
+	include(implementation("org.bytedeco:javacpp-platform:1.5.8-SNAPSHOT"))
+	include(implementation("org.bytedeco:javacpp-presets-platform:1.5.8-SNAPSHOT"))
 
 	//
 	include(implementation("org.lwjgl:lwjgl:$lwjglVersion"))
@@ -62,24 +66,6 @@ dependencies {
 	include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$linuxNatives"))
 }
 
-
-
-//tasks.withType(org.bytedeco.gradle.javacpp.BuildTask).configureEach {
-	// set here default values for all build tasks below, typically just includePath and linkPath,
-	// but also properties to set the path to the NDK and its compiler in the case of Android
-	//generate = true;
-	//compile = false;
-	//outputDirectory = new File("src/main/cpp");
-//}
-
-repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
-}
-
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -96,6 +82,14 @@ processResources {
 	filesMatching("fabric.mod.json") {
 		expand "version": project.version
 	}
+}
+
+tasks.withType(org.bytedeco.gradle.javacpp.BuildTask).configureEach {
+	// set here default values for all build tasks below, typically just includePath and linkPath,
+	// but also properties to set the path to the NDK and its compiler in the case of Android
+	generate = true;
+	compile = false;
+	outputDirectory = new File("src/main/cpp");
 }
 
 tasks.withType(JavaCompile).configureEach {
