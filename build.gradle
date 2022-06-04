@@ -32,7 +32,7 @@ dependencies {
 	include(implementation("org.bytedeco:javacpp:1.5.8-SNAPSHOT"))
 	include(implementation("org.bytedeco:javacpp-presets:1.5.8-SNAPSHOT"))
 	include(implementation("org.bytedeco:javacpp-platform:1.5.8-SNAPSHOT"))
-	include(implementation("org.bytedeco:javacpp-presets-platform:1.5.8-SNAPSHOT"))
+	include(implementation("org.bytedeco:opencv:4.5.5-1.5.8-SNAPSHOT"))
 
 	//
 	include(implementation("org.lwjgl:lwjgl:$lwjglVersion"))
@@ -89,7 +89,8 @@ tasks.withType(org.bytedeco.gradle.javacpp.BuildTask).configureEach {
 	// but also properties to set the path to the NDK and its compiler in the case of Android
 	generate = true;
 	compile = false;
-	outputDirectory = new File("src/main/cpp");
+	outputDirectory = file("$buildDir/../src/main/cpp");
+	classOrPackageNames = ['org.helixd2s.yavulkanmod.wrapper.*'];
 }
 
 tasks.withType(JavaCompile).configureEach {
