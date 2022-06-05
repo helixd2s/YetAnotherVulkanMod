@@ -102,7 +102,7 @@
 static JavaVM* JavaCPP_vm = NULL;
 static bool JavaCPP_haveAllocObject = false;
 static bool JavaCPP_haveNonvirtual = false;
-static const char* JavaCPP_classNames[10] = {
+static const char* JavaCPP_classNames[13] = {
         "org/bytedeco/javacpp/Pointer",
         "java/lang/String",
         "org/bytedeco/javacpp/Pointer$NativeDeallocator",
@@ -111,9 +111,12 @@ static const char* JavaCPP_classNames[10] = {
         "java/lang/Object",
         "java/nio/charset/Charset",
         "java/lang/NullPointerException",
-        "org/helixd2s/yavulkanmod/alter/Alter$DeviceObj",
-        "java/lang/RuntimeException" };
-static jclass JavaCPP_classes[10] = { NULL };
+        "java/lang/RuntimeException",
+        "org/helixd2s/yavulkanmod/alter/header/Core$GeometryInfo",
+        "org/helixd2s/yavulkanmod/alter/header/Core$InstanceDataInfo",
+        "org/helixd2s/yavulkanmod/alter/header/Core$QueueGetInfo",
+        "org/helixd2s/yavulkanmod/alter/objects/DeviceObj" };
+static jclass JavaCPP_classes[13] = { NULL };
 static jfieldID JavaCPP_addressFID = NULL;
 static jfieldID JavaCPP_positionFID = NULL;
 static jfieldID JavaCPP_limitFID = NULL;
@@ -656,9 +659,13 @@ public:
 
 
 
-static void JavaCPP_org_helixd2s_yavulkanmod_alter_Alter_00024DeviceObj_deallocate(void *p) { delete (::alter::DeviceObj*)p; }
+static void JavaCPP_org_helixd2s_yavulkanmod_alter_header_Core_00024GeometryInfo_deallocate(void *p) { delete (::alter::GeometryInfo*)p; }
+static void JavaCPP_org_helixd2s_yavulkanmod_alter_header_Core_00024InstanceDataInfo_deallocate(void *p) { delete (::alter::InstanceDataInfo*)p; }
+static void JavaCPP_org_helixd2s_yavulkanmod_alter_header_Core_00024QueueGetInfo_deallocate(void *p) { delete (::alter::QueueGetInfo*)p; }
+static void JavaCPP_org_helixd2s_yavulkanmod_alter_objects_DeviceObj_deallocate(void *p) { delete (alter::DeviceObj*)p; }
 
-static const char* JavaCPP_members[10][2] = {
+static const char* JavaCPP_members[13][4] = {
+        { NULL },
         { NULL },
         { NULL },
         { NULL },
@@ -668,8 +675,10 @@ static const char* JavaCPP_members[10][2] = {
         { NULL },
         { NULL },
         { "sizeof" },
-        { NULL } };
-static int JavaCPP_offsets[10][2] = {
+        { "sizeof" },
+        { "sizeof", "queueIndex", "queueFamilyIndex" },
+        { "sizeof" } };
+static int JavaCPP_offsets[13][4] = {
         { -1 },
         { -1 },
         { -1 },
@@ -678,9 +687,12 @@ static int JavaCPP_offsets[10][2] = {
         { -1 },
         { -1 },
         { -1 },
-        { sizeof(::alter::DeviceObj) },
-        { -1 } };
-static int JavaCPP_memberOffsetSizes[10] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+        { -1 },
+        { sizeof(::alter::GeometryInfo) },
+        { sizeof(::alter::InstanceDataInfo) },
+        { sizeof(::alter::QueueGetInfo), offsetof(::alter::QueueGetInfo, queueIndex), offsetof(::alter::QueueGetInfo, queueFamilyIndex) },
+        { sizeof(alter::DeviceObj) } };
+static int JavaCPP_memberOffsetSizes[13] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1 };
 
 extern "C" {
 
@@ -706,7 +718,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     if (putMemberOffsetMID == NULL) {
         return JNI_ERR;
     }
-    for (int i = 0; i < 10 && !env->ExceptionCheck(); i++) {
+    for (int i = 0; i < 13 && !env->ExceptionCheck(); i++) {
         for (int j = 0; j < JavaCPP_memberOffsetSizes[i] && !env->ExceptionCheck(); j++) {
             if (env->PushLocalFrame(3) == 0) {
                 jvalue args[3];
@@ -826,7 +838,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
         JavaCPP_log("Could not get JNIEnv for JNI_VERSION_1_6 inside JNI_OnUnLoad().");
         return;
     }
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 13; i++) {
         env->DeleteWeakGlobalRef((jweak)JavaCPP_classes[i]);
         JavaCPP_classes[i] = NULL;
     }
@@ -838,7 +850,184 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     JavaCPP_vm = NULL;
 }
 
-JNIEXPORT jobject JNICALL Java_org_helixd2s_yavulkanmod_alter_Alter_00024DeviceObj_make(JNIEnv* env, jclass cls, jobject arg0, jobject arg1) {
+
+JNIEXPORT jint JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024BucketOfDescriptorImageInfo_add(JNIEnv* env, jobject obj, jlong arg0) {
+    ::cpp21::bucket<vk::DescriptorImageInfo>* ptr = (::cpp21::bucket<vk::DescriptorImageInfo>*)jlong_to_ptr(env->GetLongField(obj, JavaCPP_addressFID));
+    if (ptr == NULL) {
+        env->ThrowNew(JavaCPP_getClass(env, 7), "This pointer address is NULL.");
+        return 0;
+    }
+    jlong position = env->GetLongField(obj, JavaCPP_positionFID);
+    ptr += position;
+    jint rarg = 0;
+    jthrowable exc = NULL;
+    try {
+        int rval = ptr->add(*(vk::DescriptorImageInfo*)arg0);
+        rarg = (jint)rval;
+    } catch (...) {
+        exc = JavaCPP_handleException(env, 8);
+    }
+
+    if (exc != NULL) {
+        env->Throw(exc);
+    }
+    return rarg;
+}
+
+JNIEXPORT jint JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024BucketOfGeometryInfo_add(JNIEnv* env, jobject obj, jobject arg0) {
+    ::cpp21::bucket<alter::GeometryInfo>* ptr = (::cpp21::bucket<alter::GeometryInfo>*)jlong_to_ptr(env->GetLongField(obj, JavaCPP_addressFID));
+    if (ptr == NULL) {
+        env->ThrowNew(JavaCPP_getClass(env, 7), "This pointer address is NULL.");
+        return 0;
+    }
+    jlong position = env->GetLongField(obj, JavaCPP_positionFID);
+    ptr += position;
+    ::alter::GeometryInfo* ptr0 = arg0 == NULL ? NULL : (::alter::GeometryInfo*)jlong_to_ptr(env->GetLongField(arg0, JavaCPP_addressFID));
+    if (ptr0 == NULL) {
+        env->ThrowNew(JavaCPP_getClass(env, 7), "Pointer address of argument 0 is NULL.");
+        return 0;
+    }
+    jlong position0 = arg0 == NULL ? 0 : env->GetLongField(arg0, JavaCPP_positionFID);
+    ptr0 += position0;
+    jint rarg = 0;
+    jthrowable exc = NULL;
+    try {
+        int rval = ptr->add(*ptr0);
+        rarg = (jint)rval;
+    } catch (...) {
+        exc = JavaCPP_handleException(env, 8);
+    }
+
+    if (exc != NULL) {
+        env->Throw(exc);
+    }
+    return rarg;
+}
+
+JNIEXPORT jint JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024BucketOfInstanceDataInfo_add(JNIEnv* env, jobject obj, jobject arg0) {
+    ::cpp21::bucket<alter::InstanceDataInfo>* ptr = (::cpp21::bucket<alter::InstanceDataInfo>*)jlong_to_ptr(env->GetLongField(obj, JavaCPP_addressFID));
+    if (ptr == NULL) {
+        env->ThrowNew(JavaCPP_getClass(env, 7), "This pointer address is NULL.");
+        return 0;
+    }
+    jlong position = env->GetLongField(obj, JavaCPP_positionFID);
+    ptr += position;
+    ::alter::InstanceDataInfo* ptr0 = arg0 == NULL ? NULL : (::alter::InstanceDataInfo*)jlong_to_ptr(env->GetLongField(arg0, JavaCPP_addressFID));
+    if (ptr0 == NULL) {
+        env->ThrowNew(JavaCPP_getClass(env, 7), "Pointer address of argument 0 is NULL.");
+        return 0;
+    }
+    jlong position0 = arg0 == NULL ? 0 : env->GetLongField(arg0, JavaCPP_positionFID);
+    ptr0 += position0;
+    jint rarg = 0;
+    jthrowable exc = NULL;
+    try {
+        int rval = ptr->add(*ptr0);
+        rarg = (jint)rval;
+    } catch (...) {
+        exc = JavaCPP_handleException(env, 8);
+    }
+
+    if (exc != NULL) {
+        env->Throw(exc);
+    }
+    return rarg;
+}
+
+JNIEXPORT void JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024GeometryInfo_allocate(JNIEnv* env, jobject obj) {
+    jthrowable exc = NULL;
+    try {
+        ::alter::GeometryInfo* rptr = new ::alter::GeometryInfo();
+        jlong rcapacity = 1;
+        JavaCPP_initPointer(env, obj, rptr, rcapacity, rptr, &JavaCPP_org_helixd2s_yavulkanmod_alter_header_Core_00024GeometryInfo_deallocate);
+    } catch (...) {
+        exc = JavaCPP_handleException(env, 8);
+    }
+
+    if (exc != NULL) {
+        env->Throw(exc);
+    }
+}
+
+JNIEXPORT void JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024InstanceDataInfo_allocate(JNIEnv* env, jobject obj) {
+    jthrowable exc = NULL;
+    try {
+        ::alter::InstanceDataInfo* rptr = new ::alter::InstanceDataInfo();
+        jlong rcapacity = 1;
+        JavaCPP_initPointer(env, obj, rptr, rcapacity, rptr, &JavaCPP_org_helixd2s_yavulkanmod_alter_header_Core_00024InstanceDataInfo_deallocate);
+    } catch (...) {
+        exc = JavaCPP_handleException(env, 8);
+    }
+
+    if (exc != NULL) {
+        env->Throw(exc);
+    }
+}
+
+JNIEXPORT void JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024QueueGetInfo_allocate(JNIEnv* env, jobject obj) {
+    jthrowable exc = NULL;
+    try {
+        ::alter::QueueGetInfo* rptr = new ::alter::QueueGetInfo();
+        jlong rcapacity = 1;
+        JavaCPP_initPointer(env, obj, rptr, rcapacity, rptr, &JavaCPP_org_helixd2s_yavulkanmod_alter_header_Core_00024QueueGetInfo_deallocate);
+    } catch (...) {
+        exc = JavaCPP_handleException(env, 8);
+    }
+
+    if (exc != NULL) {
+        env->Throw(exc);
+    }
+}
+JNIEXPORT void JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024QueueGetInfo_putQueueIndex(JNIEnv* env, jobject obj, jint arg0) {
+    ::alter::QueueGetInfo* ptr = (::alter::QueueGetInfo*)jlong_to_ptr(env->GetLongField(obj, JavaCPP_addressFID));
+    if (ptr == NULL) {
+        env->ThrowNew(JavaCPP_getClass(env, 7), "This pointer address is NULL.");
+        return;
+    }
+    jlong position = env->GetLongField(obj, JavaCPP_positionFID);
+    ptr += position;
+    ptr->queueIndex = arg0;
+}
+JNIEXPORT jint JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024QueueGetInfo_getQueueIndex(JNIEnv* env, jobject obj) {
+    ::alter::QueueGetInfo* ptr = (::alter::QueueGetInfo*)jlong_to_ptr(env->GetLongField(obj, JavaCPP_addressFID));
+    if (ptr == NULL) {
+        env->ThrowNew(JavaCPP_getClass(env, 7), "This pointer address is NULL.");
+        return 0;
+    }
+    jlong position = env->GetLongField(obj, JavaCPP_positionFID);
+    ptr += position;
+    jint rarg = 0;
+    int rval = ptr->queueIndex;
+    rarg = (jint)rval;
+    return rarg;
+}
+JNIEXPORT jint JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024QueueGetInfo_getQueueFamilyIndex(JNIEnv* env, jobject obj) {
+    ::alter::QueueGetInfo* ptr = (::alter::QueueGetInfo*)jlong_to_ptr(env->GetLongField(obj, JavaCPP_addressFID));
+    if (ptr == NULL) {
+        env->ThrowNew(JavaCPP_getClass(env, 7), "This pointer address is NULL.");
+        return 0;
+    }
+    jlong position = env->GetLongField(obj, JavaCPP_positionFID);
+    ptr += position;
+    jint rarg = 0;
+    int rval = ptr->queueFamilyIndex;
+    rarg = (jint)rval;
+    return rarg;
+}
+JNIEXPORT void JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024QueueGetInfo_putQueueFamilyIndex(JNIEnv* env, jobject obj, jint arg0) {
+    ::alter::QueueGetInfo* ptr = (::alter::QueueGetInfo*)jlong_to_ptr(env->GetLongField(obj, JavaCPP_addressFID));
+    if (ptr == NULL) {
+        env->ThrowNew(JavaCPP_getClass(env, 7), "This pointer address is NULL.");
+        return;
+    }
+    jlong position = env->GetLongField(obj, JavaCPP_positionFID);
+    ptr += position;
+    ptr->queueFamilyIndex = arg0;
+}
+
+
+
+JNIEXPORT jobject JNICALL Java_org_helixd2s_yavulkanmod_alter_objects_DeviceObj_make(JNIEnv* env, jclass cls, jobject arg0, jobject arg1) {
     ::alter::Handle* ptr0 = arg0 == NULL ? NULL : (::alter::Handle*)jlong_to_ptr(env->GetLongField(arg0, JavaCPP_addressFID));
     if (ptr0 == NULL) {
         env->ThrowNew(JavaCPP_getClass(env, 7), "Pointer address of argument 0 is NULL.");
@@ -854,22 +1043,22 @@ JNIEXPORT jobject JNICALL Java_org_helixd2s_yavulkanmod_alter_Alter_00024DeviceO
     jlong position1 = arg1 == NULL ? 0 : env->GetLongField(arg1, JavaCPP_positionFID);
     ptr1 += position1;
     jobject rarg = NULL;
-    ::alter::DeviceObj* rptr;
+    alter::DeviceObj* rptr;
     jthrowable exc = NULL;
     try {
-        SharedPtrAdapter< ::alter::DeviceObj > radapter(::alter::DeviceObj::make(*ptr0, *ptr1));
+        SharedPtrAdapter< alter::DeviceObj > radapter(alter::DeviceObj::make(*ptr0, *ptr1));
         rptr = radapter;
         jlong rcapacity = (jlong)radapter.size;
         void* rowner = radapter.owner;
-        void (*deallocator)(void*) = rowner != NULL ? &SharedPtrAdapter< ::alter::DeviceObj >::deallocate : 0;
+        void (*deallocator)(void*) = rowner != NULL ? &SharedPtrAdapter< alter::DeviceObj >::deallocate : 0;
         if (rptr != NULL) {
-            rarg = JavaCPP_createPointer(env, 8);
+            rarg = JavaCPP_createPointer(env, 12);
             if (rarg != NULL) {
                 JavaCPP_initPointer(env, rarg, rptr, rcapacity, rowner, deallocator);
             }
         }
     } catch (...) {
-        exc = JavaCPP_handleException(env, 9);
+        exc = JavaCPP_handleException(env, 8);
     }
 
     if (exc != NULL) {
@@ -877,21 +1066,20 @@ JNIEXPORT jobject JNICALL Java_org_helixd2s_yavulkanmod_alter_Alter_00024DeviceO
     }
     return rarg;
 }
-JNIEXPORT void JNICALL Java_org_helixd2s_yavulkanmod_alter_Alter_00024DeviceObj_allocate(JNIEnv* env, jobject obj) {
+JNIEXPORT void JNICALL Java_org_helixd2s_yavulkanmod_alter_objects_DeviceObj_allocate(JNIEnv* env, jobject obj) {
     jthrowable exc = NULL;
     try {
-        ::alter::DeviceObj* rptr = new ::alter::DeviceObj();
+        alter::DeviceObj* rptr = new alter::DeviceObj();
         jlong rcapacity = 1;
-        JavaCPP_initPointer(env, obj, rptr, rcapacity, rptr, &JavaCPP_org_helixd2s_yavulkanmod_alter_Alter_00024DeviceObj_deallocate);
+        JavaCPP_initPointer(env, obj, rptr, rcapacity, rptr, &JavaCPP_org_helixd2s_yavulkanmod_alter_objects_DeviceObj_deallocate);
     } catch (...) {
-        exc = JavaCPP_handleException(env, 9);
+        exc = JavaCPP_handleException(env, 8);
     }
 
     if (exc != NULL) {
         env->Throw(exc);
     }
 }
-
 
 }
 

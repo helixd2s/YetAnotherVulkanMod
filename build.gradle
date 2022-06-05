@@ -84,13 +84,19 @@ processResources {
 	}
 }
 
-tasks.withType(org.bytedeco.gradle.javacpp.BuildTask).configureEach {
-	// set here default values for all build tasks below, typically just includePath and linkPath,
-	// but also properties to set the path to the NDK and its compiler in the case of Android
+tasks.withType(org.bytedeco.gradle.javacpp.BuildTask) {
 	generate = true;
 	compile = false;
 	outputDirectory = file("$buildDir/../src/main/cpp");
-	classOrPackageNames = ['org.helixd2s.yavulkanmod.alter.*'];
+	classOrPackageNames = [
+			'org.helixd2s.yavulkanmod.alter.*',
+			'org.helixd2s.yavulkanmod.alter.header.*',
+			'org.helixd2s.yavulkanmod.alter.objects.*'
+	];
+}
+
+tasks.withType(Jar).configureEach {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 tasks.withType(JavaCompile).configureEach {

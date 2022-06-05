@@ -43,6 +43,8 @@ file(GLOB_RECURSE _source_list
   "${_src_root_path}/Alter/src/Alter/*.inl"
   
   "${_src_root_path}/src/main/cpp/*.cpp"
+  "${_src_root_path}/src/main/cpp/*.hpp"
+  "${_src_root_path}/src/main/cpp/*.h"
 )
 
 #
@@ -89,8 +91,8 @@ target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS} ${Vulkan_LIBRARIES} ${JNI
 
 # 
 if (MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b /d1FastFail /std:c17 /std:c++latest /bigobj /MD /MP /O0 /Od /Ob0 /Zc:threadSafeInit /errorReport /arch:AVX2")
-    set(CMAKE_EXE_LINKER_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /MD /MP /MAP /incremental /debug:fastlink /experimental /errorReport /LTCG:PGInstrument")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2b /d1FastFail /std:c17 /std:c++latest /bigobj /MD /FS /O0 /Od /Ob0 /Zc:threadSafeInit /errorReport /arch:AVX2")
+    set(CMAKE_EXE_LINKER_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /MD /MAP /incremental /debug:fastlink /experimental /errorReport /LTCG:PGInstrument")
 endif()
 
 # 
