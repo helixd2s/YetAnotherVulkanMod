@@ -7,7 +7,7 @@ import org.bytedeco.opencv.opencv_core.StringVector;
 import org.bytedeco.opencv.opencv_text.FloatVector;
 
 @Platform(
-        library="AlterWrapper",
+        library="YAV",
         include={"Alter/Alter.hpp",}
 )
 public class CreateInfo {

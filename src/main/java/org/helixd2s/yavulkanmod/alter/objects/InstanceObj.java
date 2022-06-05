@@ -11,7 +11,7 @@ import org.helixd2s.yavulkanmod.alter.header.CreateInfo;
 
 @Name("alter::InstanceObj")
 @Platform(
-        library="AlterWrapper",
+        library="YAV",
         include={"Alter/Alter.hpp",}
 )
 public class InstanceObj extends Pointer {

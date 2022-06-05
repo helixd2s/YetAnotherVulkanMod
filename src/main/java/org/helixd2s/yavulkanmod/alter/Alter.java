@@ -6,7 +6,7 @@ import org.bytedeco.javacpp.annotation.Platform;
 
 @Namespace("alter")
 @Platform(
-        library="AlterWrapper",
+        library="YAV",
         include={"Alter/Alter.hpp",}
 )
 public class Alter {

@@ -5,7 +5,7 @@ import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.annotation.*;
 
 @Platform(
-        library="AlterWrapper",
+        library="YAV",
         include={"Alter/Alter.hpp",}
 )
 public class Core {
