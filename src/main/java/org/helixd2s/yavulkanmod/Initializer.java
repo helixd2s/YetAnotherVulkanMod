@@ -10,5 +10,9 @@ public class Initializer implements ModInitializer {
     @Override
     public void onInitialize() {
         LOGGER.info("Hello Fabric world!");
+
+        //var instanceCInfo = new CreateInfo.InstanceCreateInfo();
+
     }
+
 }

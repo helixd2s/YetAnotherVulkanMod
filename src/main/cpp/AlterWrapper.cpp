@@ -982,16 +982,6 @@ JNIEXPORT void JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024Queu
         env->Throw(exc);
     }
 }
-JNIEXPORT void JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024QueueGetInfo_putQueueIndex(JNIEnv* env, jobject obj, jint arg0) {
-    ::alter::QueueGetInfo* ptr = (::alter::QueueGetInfo*)jlong_to_ptr(env->GetLongField(obj, JavaCPP_addressFID));
-    if (ptr == NULL) {
-        env->ThrowNew(JavaCPP_getClass(env, 7), "This pointer address is NULL.");
-        return;
-    }
-    jlong position = env->GetLongField(obj, JavaCPP_positionFID);
-    ptr += position;
-    ptr->queueIndex = arg0;
-}
 JNIEXPORT jint JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024QueueGetInfo_getQueueIndex(JNIEnv* env, jobject obj) {
     ::alter::QueueGetInfo* ptr = (::alter::QueueGetInfo*)jlong_to_ptr(env->GetLongField(obj, JavaCPP_addressFID));
     if (ptr == NULL) {
@@ -1004,6 +994,16 @@ JNIEXPORT jint JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024Queu
     int rval = ptr->queueIndex;
     rarg = (jint)rval;
     return rarg;
+}
+JNIEXPORT void JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024QueueGetInfo_putQueueIndex(JNIEnv* env, jobject obj, jint arg0) {
+    ::alter::QueueGetInfo* ptr = (::alter::QueueGetInfo*)jlong_to_ptr(env->GetLongField(obj, JavaCPP_addressFID));
+    if (ptr == NULL) {
+        env->ThrowNew(JavaCPP_getClass(env, 7), "This pointer address is NULL.");
+        return;
+    }
+    jlong position = env->GetLongField(obj, JavaCPP_positionFID);
+    ptr += position;
+    ptr->queueIndex = arg0;
 }
 JNIEXPORT jint JNICALL Java_org_helixd2s_yavulkanmod_alter_header_Core_00024QueueGetInfo_getQueueFamilyIndex(JNIEnv* env, jobject obj) {
     ::alter::QueueGetInfo* ptr = (::alter::QueueGetInfo*)jlong_to_ptr(env->GetLongField(obj, JavaCPP_addressFID));

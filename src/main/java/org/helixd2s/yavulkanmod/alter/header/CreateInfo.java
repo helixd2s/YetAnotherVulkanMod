@@ -13,7 +13,7 @@ import org.bytedeco.opencv.opencv_text.FloatVector;
 public class CreateInfo {
 
     @Name("alter::InstanceCreateInfo")
-    public class InstanceCreateInfo extends Pointer {
+    public static class InstanceCreateInfo extends Pointer {
         static { Loader.load(); }
 
         public InstanceCreateInfo() { allocate(); }
