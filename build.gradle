@@ -43,6 +43,8 @@ project.ext.winNatives = "natives-windows"
 project.ext.linuxNatives = "natives-linux"
 
 dependencies {
+	//include(compile("$buildDir/build/Debug/YAV.dll"))
+
 	// our important library!
 	include(implementation("org.bytedeco:javacpp:1.5.8-SNAPSHOT"))
 	include(implementation("org.bytedeco:opencv:4.5.5-1.5.8-SNAPSHOT"))

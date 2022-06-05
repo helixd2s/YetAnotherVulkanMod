@@ -4,6 +4,7 @@
   "package": "org.helixd2s.yavulkanmod.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "MRenderSystem"
   ],
   "client": [
   ],

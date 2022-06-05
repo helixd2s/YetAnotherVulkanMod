@@ -9,16 +9,16 @@ import org.bytedeco.javacpp.annotation.SharedPtr;
 import org.helixd2s.yavulkanmod.alter.header.Core;
 import org.helixd2s.yavulkanmod.alter.header.CreateInfo;
 
-@Name("alter::InstanceObj")
+@Name("alter::ContextObj")
 @Platform(
         library="YAV",
         include={"Alter/Alter.hpp",}
 )
-public class InstanceObj extends Pointer {
+public class ContextObj extends Pointer {
     static { Loader.load(); }
-    public InstanceObj() { allocate(); }
+    public ContextObj() { allocate(); }
     private native void allocate();
 
     @Name("make")
-    public native static @SharedPtr InstanceObj make(@ByRef CreateInfo.InstanceCreateInfo cInfo);
+    native static @SharedPtr ContextObj make(@ByRef Core.Handle handle, @ByRef CreateInfo.ContextCreateInfo cInfo);
 };

@@ -12,6 +12,14 @@ import org.bytedeco.opencv.opencv_text.FloatVector;
 )
 public class CreateInfo {
 
+    @Name("alter::ContextCreateInfo")
+    public static class ContextCreateInfo extends Pointer {
+        static { Loader.load(); }
+
+        public ContextCreateInfo() { allocate(); }
+        private native void allocate();
+    };
+
     @Name("alter::InstanceCreateInfo")
     public static class InstanceCreateInfo extends Pointer {
         static { Loader.load(); }
