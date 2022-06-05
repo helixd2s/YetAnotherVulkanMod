@@ -103,6 +103,15 @@ processResources {
 	}
 }
 
+tasks.withType(Jar).configureEach {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.withType(JavaCompile).configureEach {
+	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
+	it.options.release = 17
+}
+
 tasks.withType(org.bytedeco.gradle.javacpp.BuildTask) {
 	generate = true;
 	compile = false;
@@ -112,15 +121,6 @@ tasks.withType(org.bytedeco.gradle.javacpp.BuildTask) {
 			'org.helixd2s.yavulkanmod.alter.header.*',
 			'org.helixd2s.yavulkanmod.alter.objects.*'
 	];
-}
-
-tasks.withType(Jar).configureEach {
-	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-tasks.withType(JavaCompile).configureEach {
-	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-	it.options.release = 17
 }
 
 loom {

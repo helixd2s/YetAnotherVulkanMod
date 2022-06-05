@@ -79,18 +79,15 @@ public class CreateInfo {
         @Name("queueFamilyIndex") @MemberSetter public native void putQueueFamilyIndex(int name);
     };
 
-    //@Name("alter::ImageCreateInfo")
-    //public class ImageCreateInfo extends Pointer {
-        //static { Loader.load(); }
+    @Name("alter::ImageCreateInfo")
+    public class ImageCreateInfo extends Pointer {
+        static { Loader.load(); }
 
-        //public ImageCreateInfo() { allocate(); }
-        //private native void allocate();
+        public ImageCreateInfo() { allocate(); }
+        private native void allocate();
 
-        //@Name("extent")
-        //@MemberGetter @Cast("uintptr_t") @ByPtr public native long getExtent();
-
-        //@Name("extent")
-        //@MemberSetter public native void putExtent(int extent);
-    //};
+        @Name("extent") @MemberGetter @Cast("uintptr_t") @ByPtrRef public native long getExtent();
+        @Name("extent") @MemberSetter public native void putExtent(@ByRef @Cast("vk::Extent3D*") long extent);
+    };
 
 }
