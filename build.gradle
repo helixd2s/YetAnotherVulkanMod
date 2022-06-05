@@ -4,6 +4,12 @@ plugins {
 	id 'org.bytedeco.gradle-javacpp-build' version "1.5.8-SNAPSHOT"
 }
 
+repositories {
+	maven {
+		url 'https://oss.sonatype.org/content/repositories/snapshots'
+	}
+}
+
 ext {
 	javacppPlatform = 'windows-x86_64' // or any other platform, defaults to Loader.getPlatform()
 }
@@ -22,10 +28,6 @@ project.ext.lwjglVersion = "3.3.1"
 project.ext.jomlVersion = "1.10.4"
 project.ext.winNatives = "natives-windows"
 project.ext.linuxNatives = "natives-linux"
-
-repositories {
-	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-}
 
 dependencies {
 	// our important library!
