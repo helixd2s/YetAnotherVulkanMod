@@ -21,4 +21,7 @@ public class InstanceObj extends Pointer {
 
     @Name("make")
     public native static @SharedPtr InstanceObj make(@ByRef CreateInfo.InstanceCreateInfo cInfo);
+
+    @Name("getHandle")
+    public native @ByRef Core.Handle getHandle();
 };

@@ -20,5 +20,5 @@ public class DeviceObj extends Pointer {
     private native void allocate();
 
     @Name("make")
-    native static @SharedPtr DeviceObj make(@ByRef Core.Handle handle, @ByRef CreateInfo.DeviceCreateInfo cInfo);
+    public native static @SharedPtr DeviceObj make(@ByRef Core.Handle handle, @ByRef CreateInfo.DeviceCreateInfo cInfo);
 };

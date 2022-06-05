@@ -42,7 +42,7 @@ public class CreateInfo {
     };
 
     @Name("alter::DeviceCreateInfo")
-    public class DeviceCreateInfo extends Pointer {
+    public static class DeviceCreateInfo extends Pointer {
         static { Loader.load(); }
 
         public DeviceCreateInfo() { allocate(); }
@@ -67,6 +67,7 @@ public class CreateInfo {
     public class QueueFamilyCreateInfo extends Pointer {
         static { Loader.load(); }
 
+        public QueueFamilyCreateInfo() { allocate(); }
         private native void allocate();
 
         @Name("queuePriorities") @MemberGetter
@@ -77,5 +78,19 @@ public class CreateInfo {
         @Name("queueFamilyIndex") @MemberGetter public native int getQueueFamilyIndex();
         @Name("queueFamilyIndex") @MemberSetter public native void putQueueFamilyIndex(int name);
     };
+
+    //@Name("alter::ImageCreateInfo")
+    //public class ImageCreateInfo extends Pointer {
+        //static { Loader.load(); }
+
+        //public ImageCreateInfo() { allocate(); }
+        //private native void allocate();
+
+        //@Name("extent")
+        //@MemberGetter @Cast("uintptr_t") @ByPtr public native long getExtent();
+
+        //@Name("extent")
+        //@MemberSetter public native void putExtent(int extent);
+    //};
 
 }

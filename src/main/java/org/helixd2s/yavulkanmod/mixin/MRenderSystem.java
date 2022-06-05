@@ -6,6 +6,7 @@ import net.minecraft.util.math.Matrix4f;
 import org.helixd2s.yavulkanmod.Context;
 import org.helixd2s.yavulkanmod.alter.Alter;
 import org.helixd2s.yavulkanmod.alter.header.CreateInfo;
+import org.helixd2s.yavulkanmod.alter.objects.DeviceObj;
 import org.helixd2s.yavulkanmod.alter.objects.InstanceObj;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,7 +18,7 @@ public class MRenderSystem {
     @Inject(method = "initRenderer(IZ)V", at=@At("TAIL"))
     private static void initRenderer(int debugVerbosity, boolean debugSync, CallbackInfo ci) {
         Context.contextObj = Alter.initialize(new CreateInfo.ContextCreateInfo());
-        var instanceCInfo = new CreateInfo.InstanceCreateInfo();
-        Context.instanceObj = InstanceObj.make(instanceCInfo);
+        Context.instanceObj = InstanceObj.make(new CreateInfo.InstanceCreateInfo());
+        Context.deviceObj = DeviceObj.make(Context.instanceObj.getHandle(), new CreateInfo.DeviceCreateInfo());
     }
 }
