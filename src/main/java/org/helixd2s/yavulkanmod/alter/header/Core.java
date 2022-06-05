@@ -3,6 +3,8 @@ package org.helixd2s.yavulkanmod.alter.header;
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.annotation.*;
+import org.bytedeco.opencv.opencv_core.StringVector;
+import org.bytedeco.opencv.opencv_text.FloatVector;
 
 @Platform(
         library="YAV",

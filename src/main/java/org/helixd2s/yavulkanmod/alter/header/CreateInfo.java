@@ -3,7 +3,7 @@ package org.helixd2s.yavulkanmod.alter.header;
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.annotation.*;
-import org.bytedeco.opencv.opencv_core.StringVector;
+import org.bytedeco.ngraph.StringVector;
 import org.bytedeco.opencv.opencv_text.FloatVector;
 
 @Platform(
@@ -30,6 +30,7 @@ public class CreateInfo {
 
         @Name("extensionList") @MemberGetter public native StringVector getExtensionList();
         @Name("extensionList") @MemberSetter public native void putExtensionList(@ByRef StringVector extensions);
+
     };
 
     @Name("alter::DeviceCreateInfo")
@@ -68,4 +69,5 @@ public class CreateInfo {
         @Name("queueFamilyIndex") @MemberGetter public native int getQueueFamilyIndex();
         @Name("queueFamilyIndex") @MemberSetter public native void putQueueFamilyIndex(int name);
     };
+
 }

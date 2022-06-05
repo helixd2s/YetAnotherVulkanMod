@@ -12,7 +12,7 @@ public class Initializer implements ModInitializer {
     public void onInitialize() {
         LOGGER.info("Hello Fabric world!");
 
-        var instanceCInfo = new CreateInfo.InstanceCreateInfo();
+        //var instanceCInfo = new CreateInfo.InstanceCreateInfo();
 
     }
 

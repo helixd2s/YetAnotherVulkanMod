@@ -1,3 +1,16 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven {
+			url 'https://oss.sonatype.org/content/repositories/snapshots'
+		}
+	}
+	dependencies {
+		classpath group: 'org.bytedeco', name: 'opencv', version: '4.5.5-1.5.8-SNAPSHOT'
+		classpath group: 'org.bytedeco', name: 'ngraph', version: '0.26.0-1.5.8-SNAPSHOT'
+	}
+}
+
 plugins {
 	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
@@ -32,9 +45,11 @@ project.ext.linuxNatives = "natives-linux"
 dependencies {
 	// our important library!
 	include(implementation("org.bytedeco:javacpp:1.5.8-SNAPSHOT"))
-	include(implementation("org.bytedeco:javacpp-presets:1.5.8-SNAPSHOT"))
-	include(implementation("org.bytedeco:javacpp-platform:1.5.8-SNAPSHOT"))
 	include(implementation("org.bytedeco:opencv:4.5.5-1.5.8-SNAPSHOT"))
+	include(implementation("org.bytedeco:opencv-platform:4.5.5-1.5.8-SNAPSHOT"))
+	include(implementation("org.bytedeco:ngraph:0.26.0-1.5.8-SNAPSHOT"))
+	include(implementation("org.bytedeco:ngraph-platform:0.26.0-1.5.8-SNAPSHOT"))
+
 
 	//
 	include(implementation("org.lwjgl:lwjgl:$lwjglVersion"))
