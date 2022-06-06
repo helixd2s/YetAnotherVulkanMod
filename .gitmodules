@@ -22,3 +22,6 @@
 [submodule "VulkanMemoryAllocator"]
 	path = VulkanMemoryAllocator
 	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git
+[submodule "include/vk-utils"]
+	path = include/vk-utils
+	url = https://github.com/helixd2s/vk-utils.git
