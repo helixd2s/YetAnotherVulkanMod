@@ -150,6 +150,24 @@ public class CreateInfo {
     };
 
 
+    @Name("alter::PipelineLayoutCreateInfo")
+    public static class PipelineLayoutCreateInfo extends BaseCreateInfo {
+        static {
+            Loader.load();
+        }
+
+        public PipelineLayoutCreateInfo() {
+            allocate();
+        }
+
+        private native void allocate();
+
+        @Name("info") @MemberGetter @ByRef public native Core.QueueGetInfo getInfo();
+        @Name("info") @MemberSetter public native void putInfo(@ByRef Core.QueueGetInfo info);
+
+    };
+
+
 
     @Name("alter::MemoryAllocatorCreateInfo")
     public static class MemoryAllocatorCreateInfo extends BaseCreateInfo {
