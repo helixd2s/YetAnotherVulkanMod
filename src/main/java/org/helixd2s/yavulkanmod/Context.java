@@ -9,5 +9,5 @@ public class Context {
     public static ContextObj contextObj;
     public static PipelineLayoutObj pipelineLayoutObj;
     public static MemoryAllocatorVma memoryAllocatorObj;
-
+    public static UploaderObj uploaderObj;
 }
