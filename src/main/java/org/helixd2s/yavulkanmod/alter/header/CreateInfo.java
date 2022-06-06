@@ -63,12 +63,10 @@ public class CreateInfo {
         @Name("physicalDeviceIndex") @MemberSetter public native void putPhysicalDeviceIndex(int index);
     };
 
+
     @Name("alter::QueueFamilyCreateInfo")
     public class QueueFamilyCreateInfo extends Pointer {
         static { Loader.load(); }
-
-        public QueueFamilyCreateInfo() { allocate(); }
-        private native void allocate();
 
         @Name("queuePriorities") @MemberGetter
         public native FloatVector setQueuePriorities();
@@ -77,6 +75,17 @@ public class CreateInfo {
 
         @Name("queueFamilyIndex") @MemberGetter public native int getQueueFamilyIndex();
         @Name("queueFamilyIndex") @MemberSetter public native void putQueueFamilyIndex(int name);
+    };
+
+    @Name("std::vector<alter::QueueFamilyCreateInfo>")
+    public class VectorOfQueueFamilyCreateInfo extends Pointer {
+        static { Loader.load(); }
+
+        @Name("operator[]")
+        @ByRef public native QueueFamilyCreateInfo get(int index);
+
+        //@Name("operator[]")
+        //@ByRef public native void put(int index, @ByVal QueueFamilyCreateInfo cInfo);
     };
 
     @Name("alter::ImageCreateInfo")

@@ -15,6 +15,9 @@ public class Core {
     @Name("alter::Handle")
     public class Handle extends Pointer {
         static { Loader.load(); }
+
+        private native void allocate();
+        public Handle() { allocate(); }
     };
 
     @Name("alter::QueueGetInfo")
@@ -22,6 +25,7 @@ public class Core {
         static { Loader.load(); }
 
         private native void allocate();
+        public QueueGetInfo() { allocate(); }
 
         @Name("queueFamilyIndex") @MemberGetter
         public native int getQueueFamilyIndex();
@@ -37,6 +41,7 @@ public class Core {
         static { Loader.load(); }
 
         private native void allocate();
+        public InstanceDataInfo() { allocate(); }
     };
 
     @Name("alter::GeometryInfo")
@@ -44,6 +49,7 @@ public class Core {
         static { Loader.load(); }
 
         private native void allocate();
+        public GeometryInfo() { allocate(); }
     };
 
     @Name("cpp21::bucket<alter::InstanceDataInfo>")
@@ -51,20 +57,31 @@ public class Core {
         static { Loader.load(); }
 
         public native int add(@ByRef InstanceDataInfo ptr);
+
+        private native void allocate();
+        public BucketOfInstanceDataInfo() { allocate(); }
     };
 
     @Name("cpp21::bucket<alter::GeometryInfo>")
     public class BucketOfGeometryInfo extends Pointer {
         static { Loader.load(); }
 
+        //public native static @ByRef BucketOfGeometryInfo make();
         public native int add(@ByRef GeometryInfo ptr);
+
+        private native void allocate();
+        public BucketOfGeometryInfo() { allocate(); }
     };
 
     @Name("cpp21::bucket<vk::DescriptorImageInfo>")
     public class BucketOfDescriptorImageInfo extends Pointer {
         static { Loader.load(); }
 
+        //public native static @ByRef BucketOfDescriptorImageInfo make();
         public native int add(@ByRef @Cast("vk::DescriptorImageInfo*") long ptr);
+
+        private native void allocate();
+        public BucketOfDescriptorImageInfo() { allocate(); }
     };
 
 }
