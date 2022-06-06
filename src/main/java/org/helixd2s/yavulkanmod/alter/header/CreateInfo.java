@@ -41,27 +41,7 @@ public class CreateInfo {
 
     };
 
-    @Name("alter::DeviceCreateInfo")
-    public static class DeviceCreateInfo extends Pointer {
-        static { Loader.load(); }
 
-        public DeviceCreateInfo() { allocate(); }
-        private native void allocate();
-
-        @Name("layerList") @MemberGetter
-        public native StringVector getLayerList();
-        @Name("layerList") @MemberSetter
-        public native void putLayerList(@ByRef StringVector extensions);
-
-        @Name("extensionList") @MemberGetter public native StringVector getExtensionList();
-        @Name("extensionList") @MemberSetter public native void putExtensionList(@ByRef StringVector extensions);
-
-        @Name("physicalDeviceGroupIndex") @MemberGetter public native int getPhysicalDeviceGroupIndex();
-        @Name("physicalDeviceGroupIndex") @MemberSetter public native void putPhysicalDeviceGroupIndex(int index);
-
-        @Name("physicalDeviceIndex") @MemberGetter public native int getPhysicalDeviceIndex();
-        @Name("physicalDeviceIndex") @MemberSetter public native void putPhysicalDeviceIndex(int index);
-    };
 
 
     @Name("alter::QueueFamilyCreateInfo")
@@ -81,12 +61,45 @@ public class CreateInfo {
     public class VectorOfQueueFamilyCreateInfo extends Pointer {
         static { Loader.load(); }
 
+        public VectorOfQueueFamilyCreateInfo() { allocate(); }
+        private native void allocate();
+
         @Name("operator[]")
         @ByRef public native QueueFamilyCreateInfo get(int index);
+
+        @Name("push_back")
+        public native void pushBack(@ByRef QueueFamilyCreateInfo ptr);
 
         //@Name("operator[]")
         //@ByRef public native void put(int index, @ByVal QueueFamilyCreateInfo cInfo);
     };
+
+    @Name("alter::DeviceCreateInfo")
+    public static class DeviceCreateInfo extends Pointer {
+        static { Loader.load(); }
+
+        public DeviceCreateInfo() { allocate(); }
+        private native void allocate();
+
+        @Name("queueFamilyInfos") @MemberGetter public native @SharedPtr VectorOfQueueFamilyCreateInfo getQueueFamilyInfos();
+        @Name("queueFamilyInfos") @MemberSetter public native void putQueueFamilyInfos(@SharedPtr VectorOfQueueFamilyCreateInfo ptr);
+
+        @Name("layerList") @MemberGetter
+        public native StringVector getLayerList();
+        @Name("layerList") @MemberSetter
+        public native void putLayerList(@ByRef StringVector extensions);
+
+        @Name("extensionList") @MemberGetter public native StringVector getExtensionList();
+        @Name("extensionList") @MemberSetter public native void putExtensionList(@ByRef StringVector extensions);
+
+        @Name("physicalDeviceGroupIndex") @MemberGetter public native int getPhysicalDeviceGroupIndex();
+        @Name("physicalDeviceGroupIndex") @MemberSetter public native void putPhysicalDeviceGroupIndex(int index);
+
+        @Name("physicalDeviceIndex") @MemberGetter public native int getPhysicalDeviceIndex();
+        @Name("physicalDeviceIndex") @MemberSetter public native void putPhysicalDeviceIndex(int index);
+    };
+
+
 
     @Name("alter::ImageCreateInfo")
     public class ImageCreateInfo extends Pointer {
