@@ -9,16 +9,13 @@ import org.bytedeco.javacpp.annotation.SharedPtr;
 import org.helixd2s.yavulkanmod.alter.header.Core;
 import org.helixd2s.yavulkanmod.alter.header.CreateInfo;
 
-@Name("alter::DeviceObj")
+@Name("alter::BaseObj")
 @Platform(
         library="YAV",
         include={"Alter/Alter.hpp",}
 )
-public class DeviceObj extends BaseObj {
+public class BaseObj extends Pointer {
     static { Loader.load(); }
-    public DeviceObj() { allocate(); }
+    public BaseObj() { allocate(); }
     private native void allocate();
-
-    @Name("make")
-    public native static @SharedPtr DeviceObj make(@ByRef Core.Handle handle, @ByRef CreateInfo.DeviceCreateInfo cInfo);
 };

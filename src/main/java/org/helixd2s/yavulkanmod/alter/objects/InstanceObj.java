@@ -14,7 +14,7 @@ import org.helixd2s.yavulkanmod.alter.header.CreateInfo;
         library="YAV",
         include={"Alter/Alter.hpp",}
 )
-public class InstanceObj extends Pointer {
+public class InstanceObj extends BaseObj {
     static { Loader.load(); }
     public InstanceObj() { allocate(); }
     private native void allocate();

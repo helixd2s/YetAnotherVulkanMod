@@ -12,8 +12,18 @@ import org.bytedeco.opencv.opencv_text.FloatVector;
 )
 public class CreateInfo {
 
+    @Name("alter::BaseCreateInfo")
+    public static class BaseCreateInfo extends Pointer {
+        static { Loader.load(); }
+
+        public BaseCreateInfo() { allocate(); }
+        private native void allocate();
+
+
+    };
+
     @Name("alter::ContextCreateInfo")
-    public static class ContextCreateInfo extends Pointer {
+    public static class ContextCreateInfo extends BaseCreateInfo {
         static { Loader.load(); }
 
         public ContextCreateInfo() { allocate(); }
@@ -21,7 +31,7 @@ public class CreateInfo {
     };
 
     @Name("alter::InstanceCreateInfo")
-    public static class InstanceCreateInfo extends Pointer {
+    public static class InstanceCreateInfo extends BaseCreateInfo {
         static { Loader.load(); }
 
         public InstanceCreateInfo() { allocate(); }
@@ -45,7 +55,7 @@ public class CreateInfo {
 
 
     @Name("alter::QueueFamilyCreateInfo")
-    public class QueueFamilyCreateInfo extends Pointer {
+    public class QueueFamilyCreateInfo extends BaseCreateInfo {
         static { Loader.load(); }
 
         @Name("queuePriorities") @MemberGetter
@@ -75,7 +85,7 @@ public class CreateInfo {
     };
 
     @Name("alter::DeviceCreateInfo")
-    public static class DeviceCreateInfo extends Pointer {
+    public static class DeviceCreateInfo extends BaseCreateInfo {
         static { Loader.load(); }
 
         public DeviceCreateInfo() { allocate(); }
@@ -102,14 +112,52 @@ public class CreateInfo {
 
 
     @Name("alter::ImageCreateInfo")
-    public class ImageCreateInfo extends Pointer {
+    public class ImageCreateInfo extends BaseCreateInfo {
         static { Loader.load(); }
 
         public ImageCreateInfo() { allocate(); }
         private native void allocate();
 
+        @Name("flags") @MemberGetter @ByRef public native @Cast("int&") int getFlags();
+        @Name("flags") @MemberSetter public native void putFlags(@Cast("vk::ImageCreateFlags const&") int flags);
+
+        @Name("imageType") @MemberGetter @ByRef public native @Cast("int&") int getImageType();
+        @Name("imageType") @MemberSetter public native void putImageType(@Cast("vk::ImageType const&") int imageType);
+
+        @Name("format") @MemberGetter @ByRef public native @Cast("int&") int getFormat();
+        @Name("format") @MemberSetter public native void putFormat(@Cast("vk::Format const&") int format);
+
         @Name("extent") @MemberGetter @Cast("void*") @ByRef public native long getExtent();
-        @Name("extent") @MemberSetter public native void putExtent(@ByRef @Cast("vk::Extent3D*") long extent);
+        @Name("extent") @MemberSetter public native void putExtent(@ByRef @Cast("vk::Extent3D const*") long extent);
+
+        @Name("mipLevelCount") @MemberGetter @ByRef public native @Cast("int&") int getMipLevelCount();
+        @Name("mipLevelCount") @MemberSetter public native void putMipLevelCount(@Cast("uint32_t const&") int mipLevels);
+
+        @Name("layerCount") @MemberGetter @ByRef public native @Cast("int&") int getLayerCount();
+        @Name("layerCount") @MemberSetter public native void putLayerCount(@Cast("uint32_t const&") int layerCount);
+
+        @Name("layout") @MemberGetter @ByRef public native @Cast("int&") int getLayout();
+        @Name("layout") @MemberSetter public native void putLayout(@Cast("vk::ImageLayout const&") int imageLayout);
+
+        @Name("type") @MemberGetter @ByRef public native @Cast("int&") int getType();
+        @Name("type") @MemberSetter public native void putType(@Cast("alter::ImageType const&") int type);
+
+        // needs in future
+        @Name("info") @MemberGetter @ByRef public native Core.QueueGetInfo getInfo();
+        @Name("info") @MemberSetter public native void putInfo(@ByRef Core.QueueGetInfo info);
+
+
     };
+
+
+
+    @Name("alter::MemoryAllocatorCreateInfo")
+    public static class MemoryAllocatorCreateInfo extends BaseCreateInfo {
+        static { Loader.load(); }
+
+        public MemoryAllocatorCreateInfo() { allocate(); }
+        private native void allocate();
+    };
+
 
 }
