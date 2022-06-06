@@ -1,5 +1,6 @@
 package org.helixd2s.yavulkanmod.alter.header;
 
+import org.bytedeco.javacpp.IntPointer;
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.annotation.*;
@@ -27,13 +28,13 @@ public class Core {
         private native void allocate();
         public QueueGetInfo() { allocate(); }
 
-        @Name("queueFamilyIndex") @MemberGetter
-        public native int getQueueFamilyIndex();
-        @Name("queueFamilyIndex") @MemberSetter
-        public native void putQueueFamilyIndex(int name);
+        @MemberGetter @Cast("int*") @ByRef public native IntPointer queueFamilyIndex();
+        public int getQueueFamilyIndex() { return this.queueFamilyIndex().get(0); };
+        public void putQueueFamilyIndex(int queueFamilyIndex) { this.queueFamilyIndex().put(0, queueFamilyIndex); };
 
-        @Name("queueIndex") @MemberGetter public native int getQueueIndex();
-        @Name("queueIndex") @MemberSetter public native void putQueueIndex(int name);
+        @MemberGetter @Cast("int*") @ByRef public native IntPointer queueIndex();
+        public int getQueueIndex() { return this.queueIndex().get(0); };
+        public void putQueueIndex(int queueIndex) { this.queueIndex().put(0, queueIndex); };
     };
 
     @Name("alter::InstanceDataInfo")

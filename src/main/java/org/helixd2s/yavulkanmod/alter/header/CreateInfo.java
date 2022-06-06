@@ -1,6 +1,8 @@
 package org.helixd2s.yavulkanmod.alter.header;
 
+import org.bytedeco.javacpp.IntPointer;
 import org.bytedeco.javacpp.Loader;
+import org.bytedeco.javacpp.LongPointer;
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.annotation.*;
 import org.bytedeco.ngraph.StringVector;
@@ -58,13 +60,15 @@ public class CreateInfo {
     public class QueueFamilyCreateInfo extends BaseCreateInfo {
         static { Loader.load(); }
 
-        @Name("queuePriorities") @MemberGetter
-        public native FloatVector setQueuePriorities();
-        @Name("queuePriorities") @MemberSetter
-        public native void setQueuePriorities(FloatVector name);
+        @MemberGetter @ByRef @Cast("int*") public native IntPointer queueFamilyIndex();
+        public int getQueueFamilyIndex() { return this.queueFamilyIndex().get(0); };
+        public void putQueueFamilyIndex(int queueFamilyIndex) { this.queueFamilyIndex().put(0, queueFamilyIndex); };
 
-        @Name("queueFamilyIndex") @MemberGetter public native int getQueueFamilyIndex();
-        @Name("queueFamilyIndex") @MemberSetter public native void putQueueFamilyIndex(int name);
+        @Name("queuePriorities") @MemberGetter public native FloatVector setQueuePriorities();
+        @Name("queuePriorities") @MemberSetter public native void setQueuePriorities(FloatVector name);
+
+        //@Name("queueFamilyIndex") @MemberGetter public native int getQueueFamilyIndex();
+        //@Name("queueFamilyIndex") @MemberSetter public native void putQueueFamilyIndex(int name);
     };
 
     @Name("std::vector<alter::QueueFamilyCreateInfo>")
@@ -109,7 +113,23 @@ public class CreateInfo {
         @Name("physicalDeviceIndex") @MemberSetter public native void putPhysicalDeviceIndex(int index);
     };
 
+    @Name("alter::BufferCreateInfo")
+    public class BufferCreateInfo extends BaseCreateInfo {
+        static { Loader.load(); }
 
+        public BufferCreateInfo() { allocate(); }
+        private native void allocate();
+
+        @MemberGetter @ByRef @Cast("intptr_t") public native LongPointer size();
+        public long getSize() { return this.size().get(0); };
+        public void putSize(long size) { this.size().put(0, size); };
+
+        // needs in future
+        @Name("info") @MemberGetter @ByRef public native Core.QueueGetInfo getInfo();
+        @Name("info") @MemberSetter public native void putInfo(@ByRef Core.QueueGetInfo info);
+
+
+    };
 
     @Name("alter::ImageCreateInfo")
     public class ImageCreateInfo extends BaseCreateInfo {
@@ -118,29 +138,37 @@ public class CreateInfo {
         public ImageCreateInfo() { allocate(); }
         private native void allocate();
 
-        @Name("flags") @MemberGetter @ByRef public native @Cast("int&") int getFlags();
-        @Name("flags") @MemberSetter public native void putFlags(@Cast("vk::ImageCreateFlags const&") int flags);
+        @MemberGetter @ByRef @Cast("int*") public native IntPointer flags();
+        public int getFlags() { return this.flags().get(0); };
+        public void putFlags(int flags) { this.flags().put(0, flags); };
 
-        @Name("imageType") @MemberGetter @ByRef public native @Cast("int&") int getImageType();
-        @Name("imageType") @MemberSetter public native void putImageType(@Cast("vk::ImageType const&") int imageType);
+        @MemberGetter @ByRef @Cast("int*") public native IntPointer imageType();
+        public int getImageType() { return this.imageType().get(0); };
+        public void putImageType(int imageType) { this.imageType().put(0, imageType); };
 
-        @Name("format") @MemberGetter @ByRef public native @Cast("int&") int getFormat();
-        @Name("format") @MemberSetter public native void putFormat(@Cast("vk::Format const&") int format);
+        @MemberGetter @ByRef @Cast("int*") public native IntPointer format();
+        public int getFormat() { return this.format().get(0); };
+        public void putFormat(int format) { this.format().put(0, format); };
 
+        @MemberGetter @ByRef @Cast("int*") public native IntPointer mipLevelCount();
+        public int getMipLevelCount() { return this.mipLevelCount().get(0); };
+        public void putMipLevelCount(int mipLevels) { this.mipLevelCount().put(0, mipLevels); };
+
+        @MemberGetter @ByRef @Cast("int*") public native IntPointer layerCount();
+        public int getLayerCount() { return this.layerCount().get(0); };
+        public void putLayerCount(int layerCount) { this.layerCount().put(0, layerCount); };
+
+        @MemberGetter @ByRef @Cast("int*") public native IntPointer layout();
+        public int getLayout() { return this.layout().get(0); };
+        public void putLayout(int imageLayout) { this.layout().put(0, imageLayout); };
+
+        @MemberGetter @ByRef @Cast("int*") public native IntPointer type();
+        public int getType() { return this.type().get(0); };
+        public void putType(int type) { this.type().put(0, type); };
+
+        //
         @Name("extent") @MemberGetter @Cast("void*") @ByRef public native long getExtent();
         @Name("extent") @MemberSetter public native void putExtent(@ByRef @Cast("vk::Extent3D const*") long extent);
-
-        @Name("mipLevelCount") @MemberGetter @ByRef public native @Cast("int&") int getMipLevelCount();
-        @Name("mipLevelCount") @MemberSetter public native void putMipLevelCount(@Cast("uint32_t const&") int mipLevels);
-
-        @Name("layerCount") @MemberGetter @ByRef public native @Cast("int&") int getLayerCount();
-        @Name("layerCount") @MemberSetter public native void putLayerCount(@Cast("uint32_t const&") int layerCount);
-
-        @Name("layout") @MemberGetter @ByRef public native @Cast("int&") int getLayout();
-        @Name("layout") @MemberSetter public native void putLayout(@Cast("vk::ImageLayout const&") int imageLayout);
-
-        @Name("type") @MemberGetter @ByRef public native @Cast("int&") int getType();
-        @Name("type") @MemberSetter public native void putType(@Cast("alter::ImageType const&") int type);
 
         // needs in future
         @Name("info") @MemberGetter @ByRef public native Core.QueueGetInfo getInfo();
@@ -176,6 +204,33 @@ public class CreateInfo {
         public MemoryAllocatorCreateInfo() { allocate(); }
         private native void allocate();
     };
+
+    @Name("alter::UploaderCreateInfo")
+    public static class UploaderCreateInfo extends BaseCreateInfo {
+        static { Loader.load(); }
+
+        public UploaderCreateInfo() { allocate(); }
+        private native void allocate();
+
+        public native @ByVal UploaderCreateInfo use(@Cast("alter::ExtensionName const&") int extensionName);
+    };
+
+    @Name("alter::ResourceCreateInfo")
+    public static class ResourceCreateInfo extends BaseCreateInfo {
+        static { Loader.load(); }
+
+        public ResourceCreateInfo() { allocate(); }
+        private native void allocate();
+
+        @Name("imageInfo") public native @MemberGetter @ByRef ImageCreateInfo getImageInfo();
+        @Name("imageInfo") public native @MemberSetter void putImageInfo(@ByRef ImageCreateInfo imageCreateInfo);
+
+        @Name("bufferInfo") public native @MemberGetter @ByRef BufferCreateInfo getBufferInfo();
+        @Name("bufferInfo") public native @MemberSetter void putBufferInfo(@ByRef BufferCreateInfo bufferCreateInfo);
+
+        public native @ByVal UploaderCreateInfo use(@Cast("alter::ExtensionName const&") int extensionName);
+    };
+
 
 
 }
