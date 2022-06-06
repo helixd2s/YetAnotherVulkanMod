@@ -86,8 +86,7 @@ public class CreateInfo {
         public ImageCreateInfo() { allocate(); }
         private native void allocate();
 
-        long getExtent() { return this.address() + 12; }; // temporary workaround
-        //@Name("extent") @MemberGetter @Cast("uintptr_t") @ByPtrRef public native long getExtent();
+        @Name("extent") @MemberGetter @Cast("void*") @ByRef public native long getExtent();
         @Name("extent") @MemberSetter public native void putExtent(@ByRef @Cast("vk::Extent3D*") long extent);
     };
 
