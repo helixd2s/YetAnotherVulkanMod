@@ -57,6 +57,7 @@ public class Core {
         static { Loader.load(); }
 
         public native int add(@ByRef InstanceDataInfo ptr);
+        @Name("operator[]") @ByRef public native InstanceDataInfo get(int index);
 
         private native void allocate();
         public BucketOfInstanceDataInfo() { allocate(); }
@@ -68,6 +69,7 @@ public class Core {
 
         //public native static @ByRef BucketOfGeometryInfo make();
         public native int add(@ByRef GeometryInfo ptr);
+        @Name("operator[]") @ByRef public native GeometryInfo get(int index);
 
         private native void allocate();
         public BucketOfGeometryInfo() { allocate(); }
@@ -79,6 +81,8 @@ public class Core {
 
         //public native static @ByRef BucketOfDescriptorImageInfo make();
         public native int add(@ByRef @Cast("vk::DescriptorImageInfo*") long ptr);
+
+        @Name("operator[]") @Cast("void*") @ByRef public native long get(int index);
 
         private native void allocate();
         public BucketOfDescriptorImageInfo() { allocate(); }
