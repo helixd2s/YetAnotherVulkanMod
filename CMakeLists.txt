@@ -37,6 +37,8 @@ file(GLOB_RECURSE _source_list
   "${_src_root_path}/include/vk-utils/cpp21/*.hpp"
   "${_src_root_path}/include/vk-utils/cpp21/*.h"
 
+  "${_src_root_path}/Alter/src/Alter/*.cpp"
+  "${_src_root_path}/Alter/src/Alter/*.c"
   "${_src_root_path}/Alter/include/Alter/*.inl"
   "${_src_root_path}/Alter/include/Alter/*.hpp"
   "${_src_root_path}/Alter/include/Alter/*.h"
