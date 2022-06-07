@@ -8,6 +8,7 @@ buildscript {
 	dependencies {
 		classpath group: 'org.bytedeco', name: 'opencv', version: '4.5.5-1.5.8-SNAPSHOT'
 		classpath group: 'org.bytedeco', name: 'ngraph', version: '0.26.0-1.5.8-SNAPSHOT'
+		classpath "net.fabricmc:fabric-language-kotlin:1.7.4+kotlin.1.6.21"
 	}
 }
 
@@ -92,6 +93,7 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	modImplementation "net.fabricmc:fabric-language-kotlin:1.7.4+kotlin.1.6.21"
 }
 
 processResources {
