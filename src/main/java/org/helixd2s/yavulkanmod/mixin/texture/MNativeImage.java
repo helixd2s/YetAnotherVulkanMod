@@ -4,5 +4,5 @@ import net.minecraft.client.texture.NativeImage;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(NativeImage.class)
-public abstract class MNativeImage {
+public interface MNativeImage {
 }

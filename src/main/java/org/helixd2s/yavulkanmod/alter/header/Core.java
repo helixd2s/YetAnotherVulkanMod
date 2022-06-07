@@ -2,6 +2,7 @@ package org.helixd2s.yavulkanmod.alter.header;
 
 import org.bytedeco.javacpp.IntPointer;
 import org.bytedeco.javacpp.Loader;
+import org.bytedeco.javacpp.LongPointer;
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.annotation.*;
 import org.bytedeco.opencv.opencv_core.StringVector;
@@ -16,6 +17,14 @@ public class Core {
     @Name("alter::Handle")
     public class Handle extends Pointer {
         static { Loader.load(); }
+
+        @MemberGetter @ByRef @Cast("intptr_t*") public native LongPointer value();
+        public long getValue() { return this.value().get(0); };
+        public void putValue(long size) { this.value().put(0, size); };
+
+        @MemberGetter @ByRef @Cast("int*") public native IntPointer type();
+        public int getType() { return this.type().get(0); };
+        public void putType(int type) { this.type().put(0, type); };
 
         private native void allocate();
         public Handle() { allocate(); }

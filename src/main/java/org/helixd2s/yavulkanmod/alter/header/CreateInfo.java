@@ -120,7 +120,7 @@ public class CreateInfo {
         public BufferCreateInfo() { allocate(); }
         private native void allocate();
 
-        @MemberGetter @ByRef @Cast("intptr_t") public native LongPointer size();
+        @MemberGetter @ByRef @Cast("intptr_t*") public native LongPointer size();
         public long getSize() { return this.size().get(0); };
         public void putSize(long size) { this.size().put(0, size); };
 

@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RenderSystem.class)
-public class MRenderSystem {
+public abstract class MRenderSystem {
     @Inject(method = "initRenderer(IZ)V", at=@At("TAIL"))
     private static void mInitRenderer(int debugVerbosity, boolean debugSync, CallbackInfo ci) {
         Context.contextObj = Alter.initialize(new CreateInfo.ContextCreateInfo());
