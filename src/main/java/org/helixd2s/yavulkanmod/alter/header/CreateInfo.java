@@ -128,11 +128,14 @@ public class CreateInfo {
         @Name("info") @MemberGetter @ByRef public native Core.QueueGetInfo getInfo();
         @Name("info") @MemberSetter public native void putInfo(@ByRef Core.QueueGetInfo info);
 
+        @MemberGetter @ByRef @Cast("int*") public native IntPointer type();
+        public int getType() { return this.type().get(0); };
+        public void putType(int type) { this.type().put(0, type); };
 
     };
 
     @Name("alter::ImageCreateInfo")
-    public class ImageCreateInfo extends BaseCreateInfo {
+    public static class ImageCreateInfo extends BaseCreateInfo {
         static { Loader.load(); }
 
         public ImageCreateInfo() { allocate(); }

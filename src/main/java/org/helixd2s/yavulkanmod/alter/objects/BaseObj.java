@@ -2,10 +2,7 @@ package org.helixd2s.yavulkanmod.alter.objects;
 
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.Pointer;
-import org.bytedeco.javacpp.annotation.ByRef;
-import org.bytedeco.javacpp.annotation.Name;
-import org.bytedeco.javacpp.annotation.Platform;
-import org.bytedeco.javacpp.annotation.SharedPtr;
+import org.bytedeco.javacpp.annotation.*;
 import org.helixd2s.yavulkanmod.alter.header.Core;
 import org.helixd2s.yavulkanmod.alter.header.CreateInfo;
 
@@ -21,4 +18,7 @@ public class BaseObj extends Pointer {
 
     @Name("getHandle")
     public native @ByRef Core.Handle getHandle();
+
+    @Name("getExtHandle")
+    public native @Cast("intptr_t&") @ByRef long getExtHandle();
 };
