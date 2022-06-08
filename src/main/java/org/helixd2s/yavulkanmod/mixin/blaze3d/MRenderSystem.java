@@ -1,4 +1,4 @@
-package org.helixd2s.yavulkanmod.mixin;
+package org.helixd2s.yavulkanmod.mixin.blaze3d;
 
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.systems.RenderSystem;

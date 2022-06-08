@@ -1,32 +1,29 @@
 package org.helixd2s.yavulkanmod.mixin.texture;
 
-import com.mojang.blaze3d.platform.TextureUtil;
-import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.ResourceTexture;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import org.helixd2s.yavulkanmod.Context;
 import org.helixd2s.yavulkanmod.Resource;
 import org.helixd2s.yavulkanmod.alter.header.CreateInfo;
 import org.helixd2s.yavulkanmod.alter.objects.ResourceObj;
-import org.helixd2s.yavulkanmod.alter.objects.UploaderObj;
 import org.lwjgl.vulkan.VkExtent3D;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import static org.lwjgl.opengl.EXTMemoryObject.*;
+import static org.lwjgl.opengl.EXTMemoryObject.glCreateMemoryObjectsEXT;
+import static org.lwjgl.opengl.EXTMemoryObject.glTexStorageMem2DEXT;
 import static org.lwjgl.opengl.EXTMemoryObjectWin32.GL_HANDLE_TYPE_OPAQUE_WIN32_EXT;
 import static org.lwjgl.opengl.EXTMemoryObjectWin32.glImportMemoryWin32HandleEXT;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TYPE_2D;
 
-@Mixin(ResourceTexture.class)
-public abstract class MResourceTexture {
+@Mixin(SpriteAtlasTexture.class)
+public abstract class MSpriteAtlasTexture {
 
     /*
-    @Redirect(method = "upload(Lnet/minecraft/client/texture/NativeImage;ZZ)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/TextureUtil;prepareImage(IIII)V"))
+    @Redirect(method = "upload(Lnet/minecraft/client/texture/SpriteAtlasTexture$Data;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/TextureUtil;prepareImage(IIII)V"))
     private void mPrepareImage(int id, int maxLevel, int width, int height) {
         //
         var extent = VkExtent3D.create();

@@ -4,7 +4,8 @@
   "package": "org.helixd2s.yavulkanmod.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "MRenderSystem",
+    "blaze3d.MRenderSystem",
+    "blaze3d.MTextureUtils",
     "texture.MResourceTexture"
   ],
   "client": [
