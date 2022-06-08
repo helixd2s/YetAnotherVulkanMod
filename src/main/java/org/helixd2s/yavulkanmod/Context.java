@@ -16,5 +16,7 @@ public class Context {
     public static UploaderObj uploaderObj;
 
     //
-    public static Map<Integer, Resource> resourceMap = new HashMap<Integer, Resource>();
+    public static Map<Integer, ResourceImage> resourceImageMap = new HashMap<Integer, ResourceImage>();
+    public static Map<Integer, ResourceBuffer> resourceBufferMap = new HashMap<Integer, ResourceBuffer>();
 }
+

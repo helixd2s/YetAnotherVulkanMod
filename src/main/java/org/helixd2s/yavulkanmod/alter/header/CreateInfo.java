@@ -114,7 +114,7 @@ public class CreateInfo {
     };
 
     @Name("alter::BufferCreateInfo")
-    public class BufferCreateInfo extends BaseCreateInfo {
+    public static class BufferCreateInfo extends BaseCreateInfo {
         static { Loader.load(); }
 
         public BufferCreateInfo() { allocate(); }

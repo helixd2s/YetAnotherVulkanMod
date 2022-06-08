@@ -6,7 +6,8 @@
   "mixins": [
     "blaze3d.MRenderSystem",
     "blaze3d.MTextureUtils",
-    "texture.MResourceTexture"
+    "texture.MResourceTexture",
+    "gl.MVertexBuffer"
   ],
   "client": [
   ],

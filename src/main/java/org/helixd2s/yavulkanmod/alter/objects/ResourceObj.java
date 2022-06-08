@@ -20,5 +20,6 @@ public class ResourceObj extends BaseObj {
 
     //
     public native @Cast("intptr_t") long getAllocationOffset();
+    public native @Cast("intptr_t") long getDeviceAddress();
 };
 
