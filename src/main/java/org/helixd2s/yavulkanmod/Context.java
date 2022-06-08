@@ -18,5 +18,17 @@ public class Context {
     //
     public static Map<Integer, ResourceImage> resourceImageMap = new HashMap<Integer, ResourceImage>();
     public static Map<Integer, ResourceBuffer> resourceBufferMap = new HashMap<Integer, ResourceBuffer>();
+
+    //
+    public static ResourceObj entityVertexCache;
+    public static ResourceObj entityIndexCache;
+
+    //
+    public static int glEntityVertexCache = -1;
+    public static int glEntityIndexCache = -1;
+
+    //
+    public static long entityVertexOffset = 0;
+    public static long entityIndexOffset = 0;
 }
 

@@ -14,6 +14,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static org.helixd2s.yavulkanmod.GlOverride.glCreateBuffer;
+import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
+
 @Mixin(RenderSystem.class)
 public abstract class MRenderSystem {
     @Inject(method = "initRenderer(IZ)V", at=@At("TAIL"))
@@ -24,6 +28,14 @@ public abstract class MRenderSystem {
         Context.memoryAllocatorObj = MemoryAllocatorVma.make(Context.deviceObj.getHandle(), new CreateInfo.MemoryAllocatorCreateInfo());
         Context.pipelineLayoutObj = PipelineLayoutObj.make(Context.deviceObj.getHandle(), new CreateInfo.PipelineLayoutCreateInfo());
         Context.uploaderObj = UploaderObj.make(Context.deviceObj.getHandle(), (new CreateInfo.UploaderCreateInfo().use(3)));
+
+        //
+        Context.glEntityVertexCache = glCreateBuffer(GL_ARRAY_BUFFER, 1024 * 1024 * 4);
+        Context.glEntityIndexCache = glCreateBuffer(GL_ELEMENT_ARRAY_BUFFER, 65536 * 4);
+
+        //
+        Context.entityVertexCache = Context.resourceBufferMap.get(Context.glEntityVertexCache).obj;
+        Context.entityIndexCache = Context.resourceBufferMap.get(Context.glEntityIndexCache).obj;
     }
 
     @Inject(method="deleteTexture(I)V", at=@At("HEAD"))
