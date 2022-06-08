@@ -36,6 +36,16 @@ public abstract class MRenderSystem {
         //
         Context.entityVertexCache = Context.resourceBufferMap.get(Context.glEntityVertexCache).obj;
         Context.entityIndexCache = Context.resourceBufferMap.get(Context.glEntityIndexCache).obj;
+
+        //
+        Context.entityVertexOffset = 0;
+        Context.entityIndexOffset = 0;
+
+        // in finale...
+        // TODO: create geometry level for entities (blank)
+
+        // in finale...
+        // TODO: create instance level for everything (blank)
     }
 
     @Inject(method="deleteTexture(I)V", at=@At("HEAD"))

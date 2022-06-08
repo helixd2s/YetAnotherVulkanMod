@@ -19,6 +19,14 @@ public class Context {
     public static Map<Integer, ResourceImage> resourceImageMap = new HashMap<Integer, ResourceImage>();
     public static Map<Integer, ResourceBuffer> resourceBufferMap = new HashMap<Integer, ResourceBuffer>();
 
+    // TODO: entities
+    //public static VectorOfGeometryInfo entityGeometryInfos;
+    //public static GeometryLevelObj entityGeometryLevel;
+
+    // TODO:
+    //public static VectorOfInstanceInfo instances;
+    //public static InstanceLevelObj instanceLevel;
+
     //
     public static ResourceObj entityVertexCache;
     public static ResourceObj entityIndexCache;
