@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.TextureUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.texture.NativeImage;
-import org.helixd2s.yavulkanmod.GlOverride;
+import org.helixd2s.yavulkanmod.GlContext;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
@@ -32,6 +32,6 @@ public abstract class MTextureUtils {
         };
 
         //
-        GlOverride.glPrepareImage(internalFormat, id, maxLevel, width, height);
+        GlContext.glPrepareImage(internalFormat, id, maxLevel, width, height);
     };
 }
