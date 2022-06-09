@@ -7,6 +7,7 @@ import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.annotation.*;
 import org.bytedeco.ngraph.StringVector;
 import org.bytedeco.opencv.opencv_text.FloatVector;
+import org.bytedeco.opencv.opencv_text.IntVector;
 
 @Platform(
         library="YAV",
@@ -234,6 +235,54 @@ public class CreateInfo {
         public native @ByVal UploaderCreateInfo use(@Cast("alter::ExtensionName const&") int extensionName);
     };
 
+
+    @Name("alter::GeometryLevelCreateInfo")
+    public static class GeometryLevelCreateInfo extends BaseCreateInfo {
+        static { Loader.load(); }
+
+        public GeometryLevelCreateInfo() { allocate(); }
+        private native void allocate();
+
+        public native @MemberGetter @Name("geometries") @ByRef Core.BucketOfGeometryInfo getGeometries();
+        public native @MemberSetter @Name("geometries") void putGeometries(@ByRef Core.BucketOfGeometryInfo geometries);
+
+        public native @MemberGetter @Name("limits") @Cast("std::vector<int>*") @ByRef IntVector getLimits();
+        public native @MemberSetter @Name("limits") void putLimits(@Cast("std::vector<uint32_t>*") @ByRef IntVector limits);
+
+        @MemberGetter @ByRef @Cast("intptr_t*") public native LongPointer uploader();
+        public long getUploader() { return this.uploader().get(0); };
+        public void putUploader(long uploader) { this.uploader().put(0, uploader); };
+
+        @Name("info") @MemberGetter @ByRef public native Core.QueueGetInfo getInfo();
+        @Name("info") @MemberSetter public native void putInfo(@ByRef Core.QueueGetInfo info);
+
+    };
+
+
+    @Name("alter::InstanceLevelCreateInfo")
+    public static class InstanceLevelCreateInfo extends BaseCreateInfo {
+        static { Loader.load(); }
+
+        public InstanceLevelCreateInfo() { allocate(); }
+        private native void allocate();
+
+        public native @MemberGetter @Name("instances") @ByRef Core.BucketOfInstanceDataInfo getInstances();
+        public native @MemberSetter @Name("instances") void putInstances(@ByRef Core.BucketOfInstanceDataInfo geometries);
+
+        //
+        @MemberGetter @ByRef @Name("limit") @Cast("int*") public native IntPointer limitCpp();
+        public int getLimit() { return this.limitCpp().get(0); };
+        public void putLimit(int limit) { this.limitCpp().put(0, limit); };
+
+        //
+        @MemberGetter @ByRef @Cast("intptr_t*") public native LongPointer uploader();
+        public long getUploader() { return this.uploader().get(0); };
+        public void putUploader(long uploader) { this.uploader().put(0, uploader); };
+
+        @Name("info") @MemberGetter @ByRef public native Core.QueueGetInfo getInfo();
+        @Name("info") @MemberSetter public native void putInfo(@ByRef Core.QueueGetInfo info);
+
+    };
 
 
 }

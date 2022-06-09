@@ -8,18 +8,16 @@ import org.bytedeco.javacpp.annotation.SharedPtr;
 import org.helixd2s.yavulkanmod.alter.header.Core;
 import org.helixd2s.yavulkanmod.alter.header.CreateInfo;
 
-@Name("alter::DeviceObj")
+@Name("alter::GeometryLevelObj")
 @Platform(
         library="YAV",
         include={"Alter/Alter.hpp",}
 )
-public class DeviceObj extends BaseObj {
+public class GeometryLevelObj extends BaseObj {
     static { Loader.load(); }
-    public DeviceObj() { allocate(); }
+    public GeometryLevelObj() { allocate(); }
     private native void allocate();
 
     @Name("make")
-    public native static @SharedPtr DeviceObj make(@ByRef Core.Handle handle, @ByRef CreateInfo.DeviceCreateInfo cInfo);
-
-    
+    public native static @SharedPtr GeometryLevelObj make(@ByRef Core.Handle handle, @ByRef CreateInfo.GeometryLevelCreateInfo cInfo);
 };

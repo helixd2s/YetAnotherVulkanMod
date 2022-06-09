@@ -1,5 +1,6 @@
 package org.helixd2s.yavulkanmod;
 
+import org.helixd2s.yavulkanmod.alter.header.Core;
 import org.helixd2s.yavulkanmod.alter.objects.*;
 
 import java.util.HashMap;
@@ -20,12 +21,12 @@ public class Context {
     public static Map<Integer, ResourceBuffer> resourceBufferMap = new HashMap<Integer, ResourceBuffer>();
 
     // TODO: entities
-    //public static VectorOfGeometryInfo entityGeometryInfos;
-    //public static GeometryLevelObj entityGeometryLevel;
+    public static Core.BucketOfGeometryInfo entityGeometryInfos;
+    public static GeometryLevelObj entityGeometryLevel;
 
     // TODO:
-    //public static VectorOfInstanceInfo instances;
-    //public static InstanceLevelObj instanceLevel;
+    public static Core.BucketOfInstanceDataInfo instances;
+    public static InstanceLevelObj instanceLevel;
 
     //
     public static ResourceObj entityVertexCache;
