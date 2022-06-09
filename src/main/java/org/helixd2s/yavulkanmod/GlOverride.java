@@ -27,14 +27,14 @@ public class GlOverride {
     //
     static public void glCopyBufferToCache(int target, ByteBuffer data, int usage) {
         if (target == GL_ARRAY_BUFFER) {
-            glBindBuffer(GL_COPY_WRITE_BUFFER, Context.glEntityVertexCache);
-            glCopyBufferSubData(GL_ARRAY_BUFFER, GL_COPY_WRITE_BUFFER, 0, Context.entityVertexOffset, data.limit());
-            Context.entityVertexOffset += data.limit();
+            GlContext.entityVertex.offset = GlContext.entityVertex.size; GlContext.entityVertex.size += data.limit();
+            glBindBuffer(GL_COPY_WRITE_BUFFER, GlContext.entityVertex.glCache);
+            glCopyBufferSubData(GL_ARRAY_BUFFER, GL_COPY_WRITE_BUFFER, 0, GlContext.entityVertex.offset, data.limit());
         };
         if (target == GL_ELEMENT_ARRAY_BUFFER) {
-            glBindBuffer(GL_COPY_WRITE_BUFFER, Context.glEntityIndexCache);
-            glCopyBufferSubData(GL_ELEMENT_ARRAY_BUFFER, GL_COPY_WRITE_BUFFER, 0, Context.entityIndexOffset, data.limit());
-            Context.entityIndexOffset += data.limit();
+            GlContext.entityIndex.offset = GlContext.entityIndex.size; GlContext.entityIndex.size += data.limit();
+            glBindBuffer(GL_COPY_WRITE_BUFFER, GlContext.entityIndex.glCache);
+            glCopyBufferSubData(GL_ELEMENT_ARRAY_BUFFER, GL_COPY_WRITE_BUFFER, 0, GlContext.entityIndex.offset, data.limit());
         };
     };
 
@@ -47,7 +47,7 @@ public class GlOverride {
                 GlStateManager._texImage2D(3553, i, internalFormat.getValue(), width >> i, height >> i, 0, 6408, 5121, (IntBuffer)null);
             }
         } else {
-            ResourceImage resource = Context.resourceImageMap.get(id);
+            ResourceImage resource = GlContext.resourceImageMap.get(id);
             ResourceObj resourceObj = null;
 
             //
@@ -85,7 +85,7 @@ public class GlOverride {
                 resource.resourceCreateInfo.putImageInfo(resource.imageCreateInfo);
 
                 //
-                resourceObj = resource.obj = ResourceObj.make(Context.deviceObj.getHandle(), resource.resourceCreateInfo);
+                resourceObj = resource.obj = ResourceObj.make(GlContext.deviceObj.getHandle(), resource.resourceCreateInfo);
 
                 //
                 glBindTexture(GL_TEXTURE_2D, id);
@@ -93,7 +93,7 @@ public class GlOverride {
                 glTexStorageMem2DEXT(GL_TEXTURE_2D, maxLevel + 1, glFormat, width, height, resource.glMemory, resource.obj.getAllocationOffset());
 
                 //
-                Context.resourceImageMap.put(id, resource);
+                GlContext.resourceImageMap.put(id, resource);
             } else {
                 resourceObj = resource.obj;
             };
@@ -102,7 +102,7 @@ public class GlOverride {
 
     static public int glCreateBuffer(int target, long defaultSize) {
         int glBuffer[] = {-1};
-        ResourceBuffer resource = Context.resourceBufferMap.get(glBuffer[0]);
+        ResourceBuffer resource = GlContext.resourceBufferMap.get(glBuffer[0]);
         ResourceObj resourceObj = null;
 
         //
@@ -119,7 +119,7 @@ public class GlOverride {
             resource.resourceCreateInfo.putBufferInfo(resource.bufferCreateInfo);
 
             //
-            resourceObj = resource.obj = ResourceObj.make(Context.deviceObj.getHandle(), resource.resourceCreateInfo);
+            resourceObj = resource.obj = ResourceObj.make(GlContext.deviceObj.getHandle(), resource.resourceCreateInfo);
 
             //
             GL45.glCreateBuffers(glBuffer);
@@ -127,7 +127,7 @@ public class GlOverride {
             glNamedBufferStorageMemEXT(glBuffer[0], defaultSize, resource.glMemory, resource.obj.getAllocationOffset());
 
             //
-            Context.resourceBufferMap.put(glBuffer[0], resource);
+            GlContext.resourceBufferMap.put(glBuffer[0], resource);
         //} else {
             //resourceObj = resource.obj;
         //}
@@ -139,7 +139,7 @@ public class GlOverride {
 
             //
             int id = glGetInteger(target == GL_ARRAY_BUFFER ? GL_ARRAY_BUFFER_BINDING : GL_ELEMENT_ARRAY_BUFFER_BINDING);
-            ResourceBuffer resource = Context.resourceBufferMap.get(id);
+            ResourceBuffer resource = GlContext.resourceBufferMap.get(id);
             ResourceObj resourceObj = null;
 
             //
@@ -156,14 +156,14 @@ public class GlOverride {
                 resource.resourceCreateInfo.putBufferInfo(resource.bufferCreateInfo);
 
                 //
-                resourceObj = resource.obj = ResourceObj.make(Context.deviceObj.getHandle(), resource.resourceCreateInfo);
+                resourceObj = resource.obj = ResourceObj.make(GlContext.deviceObj.getHandle(), resource.resourceCreateInfo);
 
                 //
                 glImportMemoryWin32HandleEXT(resource.glMemory = glCreateMemoryObjectsEXT(), defaultSize, GL_HANDLE_TYPE_OPAQUE_WIN32_EXT, resourceObj.getExtHandle());
                 glBufferStorageMemEXT(target, defaultSize, resource.glMemory, resource.obj.getAllocationOffset());
 
                 //
-                Context.resourceBufferMap.put(id, resource);
+                GlContext.resourceBufferMap.put(id, resource);
             } else {
                 resourceObj = resource.obj;
             }
