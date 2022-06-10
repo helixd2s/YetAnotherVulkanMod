@@ -1,1 +1,1 @@
-../../Vulkan-Headers/include/vulkan/vulkan_ggp.h
+../../Alter/Vulkan-Headers/include/vulkan/vulkan_ggp.h
