@@ -57,7 +57,7 @@ public class GlContext {
 
     static public class ResourceCache {
         public static ResourceObj cache;
-        public static int glCache = -1;
+        public static int glCache = 0;
         public static long offset = 0;
         public static long size = 0;
 
@@ -230,7 +230,7 @@ public class GlContext {
     };
 
     public static int glCreateBuffer(int target, long defaultSize) {
-        int glBuffer[] = {-1};
+        int glBuffer[] = {0};
         ResourceBuffer resource = GlContext.resourceBufferMap.get(glBuffer[0]);
         ResourceObj resourceObj = null;
 

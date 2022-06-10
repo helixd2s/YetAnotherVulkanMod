@@ -10,9 +10,4 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(RenderSystem.class)
 public class MRenderSystem {
 
-    // UNSAFE!
-    //@Inject(method="drawElements(III)V", at=@At("TAIL"))
-    //static void drawElements(int mode, int count, int type, CallbackInfo ci) {
-        //GlContext.inclusion();
-    //};
 };

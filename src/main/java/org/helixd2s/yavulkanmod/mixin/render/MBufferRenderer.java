@@ -22,22 +22,20 @@ public abstract class MBufferRenderer {
     //
     @Redirect(method = "draw(Ljava/nio/ByteBuffer;Lnet/minecraft/client/render/VertexFormat$DrawMode;Lnet/minecraft/client/render/VertexFormat;ILnet/minecraft/client/render/VertexFormat$IntType;IZ)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_glBufferData(ILjava/nio/ByteBuffer;I)V"))
     private static void draw_glBufferData(int target, ByteBuffer data, int usage) {
-        //assertOnRenderThreadOrInit();
         long defaultSize = Math.max((target == GL_ARRAY_BUFFER ? 1024 * 1024 : 65536), data.limit());
-        //GlOverride.glBufferData(defaultSize, target, data, usage);
         GlStateManager._glBufferData(target, data, usage);
         if (GlContext.worldRendering) {
             GlContext.glCopyBufferToCache(target, data, usage);
-        };
-    };
+        }
+    }
 
     @Redirect(method = "draw(Ljava/nio/ByteBuffer;Lnet/minecraft/client/render/VertexFormat$DrawMode;Lnet/minecraft/client/render/VertexFormat;ILnet/minecraft/client/render/VertexFormat$IntType;IZ)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_drawElements(IIIJ)V"))
     private static void draw_glDrawElements(int mode, int count, int type, long indices) {
         GlStateManager._drawElements(mode, count, type, indices);
-        if (GlContext.worldRendering) {
+        if (GlContext.worldRendering && mode == GL_TRIANGLES) {
             GlContext.inclusion();
-        };
-    };
+        }
+    }
 
     @Redirect(method = "draw(Ljava/nio/ByteBuffer;Lnet/minecraft/client/render/VertexFormat$DrawMode;Lnet/minecraft/client/render/VertexFormat;ILnet/minecraft/client/render/VertexFormat$IntType;IZ)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_glBindBuffer(II)V"))
     private static void draw_glBindBuffer(int target, int buffer) {
@@ -46,10 +44,10 @@ public abstract class MBufferRenderer {
             if (target == 34963) {
                 GlContext.hasIndexBuffer = true;
             }
-        };
-    };
+        }
+    }
 
-    @Inject(method = "bind(Lnet/minecraft/client/render/VertexFormat;)V", at=@At("TAIL"))
+    @Inject(method = "bind(Lnet/minecraft/client/render/VertexFormat;)V", at = @At("TAIL"))
     private static void onBind(VertexFormat vertexFormat, CallbackInfo ci) {
         if (GlContext.worldRendering) {
             GlContext.currentVertexFormat = vertexFormat;
@@ -57,31 +55,12 @@ public abstract class MBufferRenderer {
             GlContext.currentIndexOffset = GlContext.entityIndex.offset;
             GlContext.currentGlVertexBuffer = GlContext.entityVertex.glCache;
             GlContext.currentGlIndexBuffer = GlContext.entityIndex.glCache;
-        };
-    };
+        }
+    }
 
-    @Inject(method = "draw(Ljava/nio/ByteBuffer;Lnet/minecraft/client/render/VertexFormat$DrawMode;Lnet/minecraft/client/render/VertexFormat;ILnet/minecraft/client/render/VertexFormat$IntType;IZ)V", at=@At("HEAD"))
+    @Inject(method = "draw(Ljava/nio/ByteBuffer;Lnet/minecraft/client/render/VertexFormat$DrawMode;Lnet/minecraft/client/render/VertexFormat;ILnet/minecraft/client/render/VertexFormat$IntType;IZ)V", at = @At("HEAD"))
     private static void onBeginDraw(ByteBuffer buffer, VertexFormat.DrawMode drawMode, VertexFormat vertexFormat, int count, VertexFormat.IntType elementFormat, int vertexCount, boolean textured, CallbackInfo ci) {
         GlContext.hasIndexBuffer = false;
-    };
-
-    //
-    //@Redirect(method = "postDraw(Lnet/minecraft/client/render/BufferBuilder;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_drawElements(IIIJ)V"))
-    //private static void postDraw_glDrawElements(int mode, int count, int type, long indices) {
-    //GlStateManager._drawElements(mode, count, type, indices);
-    //GlContext.inclusion();
-    //};
-
-    //
-    //@Redirect(method = "postDraw(Lnet/minecraft/client/render/BufferBuilder;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_glBindBuffer(II)V"))
-    //private static void postDraw_glBindBuffer(int target, int buffer) {
-    //GlStateManager._glBindBuffer(target, buffer);
-    //if (target == 34963) { GlContext.hasIndexBuffer = true; };
-    //};
-
-    //@Inject(method = "postDraw(Lnet/minecraft/client/render/BufferBuilder;)V", at=@At("HEAD"))
-    //private static void onBeginPostDraw(BufferBuilder builder, CallbackInfo ci) {
-    //GlContext.hasIndexBuffer = false;
-    //};
+    }
 
 }

@@ -20,6 +20,12 @@ public class MGameRenderer {
         GlContext.entityIndex.offset = 0;
         GlContext.entityVertex.size = 0;
         GlContext.entityIndex.size = 0;
+        GlContext.worldRendering = false;
+        GlContext.currentVertexFormat = null;
+        GlContext.currentVertexOffset = 0;
+        GlContext.currentIndexOffset = 0;
+        GlContext.currentGlVertexBuffer = 0;
+        GlContext.currentGlIndexBuffer = 0;
     };
 
 }

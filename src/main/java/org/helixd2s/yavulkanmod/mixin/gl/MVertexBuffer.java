@@ -38,7 +38,7 @@ public abstract class MVertexBuffer {
         } else {
             RenderSystem.glBufferData(target, data, usage);
         }
-    };
+    }
 
     // bind to draw currency
     @Inject(method="bind()V", at=@At("HEAD"))
@@ -51,16 +51,15 @@ public abstract class MVertexBuffer {
             GlContext.hasIndexBuffer = !hasNoIndexBuffer;
             GlContext.currentVertexOffset = 0;
             GlContext.currentIndexOffset = 0;
-        };
-        //
-    };
+        }
+    }
 
     //
     @Redirect(method="drawVertices()V", at=@At(value = "INVOKE", target="Lcom/mojang/blaze3d/systems/RenderSystem;drawElements(III)V"))
     public void drawVertices(int mode, int count, int type) {
         RenderSystem.drawElements(mode, count, type);
-        if (GlContext.worldRendering) {
+        if (GlContext.worldRendering && mode == GL_TRIANGLES) {
             GlContext.inclusion();
-        };
-    };
+        }
+    }
 };

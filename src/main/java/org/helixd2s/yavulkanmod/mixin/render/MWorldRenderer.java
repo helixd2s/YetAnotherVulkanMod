@@ -22,6 +22,11 @@ public abstract class MWorldRenderer {
         GlContext.entityVertex.size = 0;
         GlContext.entityIndex.size = 0;
         GlContext.worldRendering = true;
+        GlContext.currentVertexFormat = null;
+        GlContext.currentVertexOffset = 0;
+        GlContext.currentIndexOffset = 0;
+        GlContext.currentGlVertexBuffer = 0;
+        GlContext.currentGlIndexBuffer = 0;
     };
 
     @Inject(method="render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V", at=@At("TAIL"))
@@ -31,6 +36,11 @@ public abstract class MWorldRenderer {
         GlContext.entityVertex.size = 0;
         GlContext.entityIndex.size = 0;
         GlContext.worldRendering = false;
+        GlContext.currentVertexFormat = null;
+        GlContext.currentVertexOffset = 0;
+        GlContext.currentIndexOffset = 0;
+        GlContext.currentGlVertexBuffer = 0;
+        GlContext.currentGlIndexBuffer = 0;
     };
     
 }
