@@ -65,12 +65,16 @@ add_library(${PROJECT_NAME} SHARED ${_source_list})
 target_compile_definitions(${PROJECT_NAME} PUBLIC SHARED_PTR_NAMESPACE=std ALT_USE_ROBIN_HOOD USE_CMAKE_PCH VULKAN_HPP_NO_CONSTRUCTORS NOMINMAX ALT_ENABLE_VMA ALT_ENABLE_GLTF CPP21_DEBUG_MEMORY TINYGLTF_USE_CPP14 ANAMED=alter ${PLATFORM_DEF})
 target_include_directories(${PROJECT_NAME} PUBLIC 
   ${PROJECT_SOURCE_DIR}/include 
-  ${PROJECT_SOURCE_DIR}/../vk-utls/interval-tree/include
-  ${PROJECT_SOURCE_DIR}/../vk-utls/submodules/include 
-  ${PROJECT_SOURCE_DIR}/../vk-utls/generator/include 
-  ${PROJECT_SOURCE_DIR}/../vk-utls/glm
+  ${PROJECT_SOURCE_DIR}/../vk-utils/
+  ${PROJECT_SOURCE_DIR}/../vk-utils/interval-tree/include
+  ${PROJECT_SOURCE_DIR}/../vk-utils/submodules/include 
+  ${PROJECT_SOURCE_DIR}/../vk-utils/generator/include 
+  ${PROJECT_SOURCE_DIR}/../vk-utils/glm
+  ${PROJECT_SOURCE_DIR}/../vk-utils/glm/glm
   ${PROJECT_SOURCE_DIR}/../VulkanMemoryAllocator/include
   ${PROJECT_SOURCE_DIR}/../Vulkan-Headers/include
+  ${PROJECT_SOURCE_DIR}/../glm/glm
+  ${PROJECT_SOURCE_DIR}/../glm
   ${Vulkan_INCLUDE_DIRS}
   ${JNI_INCLUDE_DIRS}
 )
