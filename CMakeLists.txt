@@ -30,21 +30,24 @@ set(CMAKE_CXX_STANDARD 23)
 set(_src_root_path "${PROJECT_SOURCE_DIR}")
 file(GLOB_RECURSE _source_list 
   LIST_DIRECTORIES false
-
   "${_src_root_path}/../vk-utils/*.inl"
   "${_src_root_path}/../vk-utils/*.hpp"
   "${_src_root_path}/../vk-utils/*.h"
   "${_src_root_path}/../vk-utils/cpp21/*.inl"
   "${_src_root_path}/../vk-utils/cpp21/*.hpp"
   "${_src_root_path}/../vk-utils/cpp21/*.h"
-
   "${_src_root_path}/../Alter/src/Alter/*.cpp"
   "${_src_root_path}/../Alter/src/Alter/*.c"
+  "${_src_root_path}/../Alter/src/Alter/*.inl"
   "${_src_root_path}/../Alter/include/Alter/*.inl"
   "${_src_root_path}/../Alter/include/Alter/*.hpp"
   "${_src_root_path}/../Alter/include/Alter/*.h"
-  "${_src_root_path}/../Alter/src/Alter/*.inl"
-
+  "${_src_root_path}/../Alter/include/*.h"
+  "${_src_root_path}/../Alter/include/*.inl"
+  "${_src_root_path}/../Alter/include/*.hpp"
+  "${_src_root_path}/../Alter/include/*.cpp"
+  "${_src_root_path}/../Alter/include/*.hxx"
+  "${_src_root_path}/../Alter/include/*.cxx"
   "${_src_root_path}/src/main/cpp/*.cpp"
   "${_src_root_path}/src/main/cpp/*.hpp"
   "${_src_root_path}/src/main/cpp/*.h"
@@ -65,6 +68,9 @@ add_library(${PROJECT_NAME} SHARED ${_source_list})
 target_compile_definitions(${PROJECT_NAME} PUBLIC SHARED_PTR_NAMESPACE=std ALT_USE_ROBIN_HOOD USE_CMAKE_PCH VULKAN_HPP_NO_CONSTRUCTORS NOMINMAX ALT_ENABLE_VMA ALT_ENABLE_GLTF CPP21_DEBUG_MEMORY TINYGLTF_USE_CPP14 ANAMED=alter ${PLATFORM_DEF})
 target_include_directories(${PROJECT_NAME} PUBLIC 
   ${PROJECT_SOURCE_DIR}/include 
+  ${PROJECT_SOURCE_DIR}/../Alter/
+  ${PROJECT_SOURCE_DIR}/../Alter/include/
+  ${PROJECT_SOURCE_DIR}/../Alter/include/Alter/
   ${PROJECT_SOURCE_DIR}/../vk-utils/
   ${PROJECT_SOURCE_DIR}/../vk-utils/interval-tree/include
   ${PROJECT_SOURCE_DIR}/../vk-utils/submodules/include 
@@ -86,10 +92,13 @@ target_link_directories(${PROJECT_NAME} PUBLIC
 )
 
 #
-set (HSOURCES "submodules/include/vk-utils/cpp21/core.hpp" "Alter/include/Alter/Core.hpp")
+set (HSOURCES "${PROJECT_SOURCE_DIR}/../vk-utils/cpp21/core.hpp" "${PROJECT_SOURCE_DIR}/../Alter/include/Alter/Core.hpp")
 
 #
-ADD_MSVC_PRECOMPILED_HEADER("Alter/include/cmake_pch.hxx" "Alter/include/cmake_pch.cxx" HSOURCES)
+#ADD_MSVC_PRECOMPILED_HEADER(
+  #"${PROJECT_SOURCE_DIR}/../Alter/include/cmake_pch.hpp"
+  #"${PROJECT_SOURCE_DIR}/../Alter/include/cmake_pch.cpp"
+  #HSOURCES)
 
 #
 target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS} ${Vulkan_LIBRARIES} ${JNI_LIBRARIES} )
