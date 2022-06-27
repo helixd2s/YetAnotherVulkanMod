@@ -2,8 +2,7 @@
 
 ## 💬 [Обсуждения/Discussions](https://github.com/helixd2s/about/discussions) 💬
 ## 🐞 [Баг-Репорты/Bug-Tracker](https://github.com/helixd2s/about/issues) 🐞
-
-## Project currently is dead...
+## 🪦 Project currently is dead... 🪦
 
 Own Vulkan API, based on the experience of others, and our own. Partial Render Replacement. 
 
